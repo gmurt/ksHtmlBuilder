@@ -45,8 +45,6 @@ var
 
 implementation
 
-uses JsonDataObjects, ClipBrd;
-
 const
   C_HEADER_IMG = 'https://www.publicdomainpictures.net/pictures/150000/velka/banner-header-tapete-1450368431G3V.jpg';
 
@@ -78,22 +76,35 @@ procedure TForm22.PopulateBootstrapButtons(AHtml: IHtmlDocumentNew);
 var
   e: THtmlElementList;
 begin
-  e := AHtml.Container.Elements;
+  e := AHtml.Content.Elements;
   e.AddHeader(h2, 'Bootstrap Style Buttons');
   e.AddHr;
   e.AddParagraph('(These are defined using pure css so do not require bootstrap)');
-  e.AddButton('Primary Button', '#', THtmlButtonStyle.btnPrimary);
+  e.AddButton('Primary Button', '', THtmlButtonStyle.btnPrimary);
+  e.AddButton('Secondary Button', '', THtmlButtonStyle.btnSecondary);
+  e.AddButton('Success Button', '', THtmlButtonStyle.btnSuccess);
+  e.AddButton('Danger Button', '', THtmlButtonStyle.btnDanger);
+
+  e.AddButton('Warning Button', '', THtmlButtonStyle.btnWarning);
+  e.AddButton('Info Button', '', THtmlButtonStyle.btnInfo);
+  e.AddButton('Light Button', '', THtmlButtonStyle.btnLight);
+  e.AddButton('Link Button', '', THtmlButtonStyle.btnLink);
 end;
 
 procedure TForm22.PopulateBootstrapAlerts(AHtml: IHtmlDocumentNew);
 var
   e: THtmlElementList;
 begin
-  e := AHtml.Container.Elements;
+  e := AHtml.Content.Elements;
+
   e.AddHeader(h2, 'Bootstrap Style Alerts');
   e.AddHr;
   e.AddParagraph('(These are defined using pure css so do not require bootstrap)');
-  e.AddButton('Primary Button', '#', THtmlButtonStyle.btnPrimary);
+  e.AddSpacer(20);
+  e.AddAlert('Success alert example', THtmlAlertStyle.asSuccess);
+  e.AddAlert('Danger alert example', THtmlAlertStyle.asDanger);
+  e.AddAlert('Warning alert example', THtmlAlertStyle.asWarning);
+
 end;
 
 
@@ -103,11 +114,8 @@ var
 begin
   AHtml.HeaderBanner.Src := 'https://www.moboinnovations.com/images/pictures/product-images/chip-pin/card-payment-header.png';
 
-  e := AHtml.Container.Elements;
+  e := AHtml.Content.Elements;
 
-  e.AddAlert('Test alert', asSuccess);
-  e.AddAlert('Test alert', asDanger);
-  e.AddAlert('Test alert', asWarning);
   e.AddHeader(h2, 'Payment Failed');
   e.AddHr;
   e.AddSpacer(20);
@@ -135,7 +143,6 @@ var
   Doc: Variant;
   s: string;
   AHtml: IHtmlDocumentNew;
-  AJson: TJsonObject;
 begin
   if not Assigned(WebBrowser1.Document) then
     WebBrowser1.Navigate('about:blank');
@@ -147,7 +154,6 @@ begin
   if s = 'bootstrap style alerts' then PopulateBootstrapAlerts(AHtml);
   if s = 'bootstrap style buttons' then PopulateBootstrapButtons(AHtml);
   if s = 'payment failed' then PaymentFailedTemplate(AHtml);
-  if s = 'payment failed' then PaymentFailedTemplate(AHtml);
   if s = 'cancel booking' then CancelBookingTemplate(AHtml);
   if s = 'voucher' then VoucherTemplate(AHtml);
 
@@ -158,14 +164,6 @@ begin
   Doc.Clear;
   Doc.Write(memo1.Text);
   Doc.Close;
-
-  AJson := TJsonObject.Create;
-  try
-    AHtml.SaveToJson(AJson);
-    clipboard.AsText := (AJson.ToJSON(False));
-  finally
-    AJson.Free;
-  end;
 end;
 
 procedure TForm22.VoucherTemplate(AHtml: IHtmlDocumentNew);
@@ -173,11 +171,11 @@ var
   e: THtmlElementList;
 begin
   AHtml.HeaderBanner.Src := 'https://i0.wp.com/banners-restaurant.com/wp-content/uploads/2020/11/Copy-of-Header-Xmas-Gift-Voucher-writing-1.png?fit=1400%2C500&ssl=1';
-  e := AHtml.Container.Elements;
+  e := AHtml.Content.Elements;
   e.AddHeader(h2, 'Gift Voucher');
   e.AddHeader(h3, 'The Demo Bistro (£50)');
   e.AddSpacer(10);
-  e.AddParagraph('Dear John,,');
+  e.AddParagraph('Dear John,');
   e.AddSpacer(10);
   e.AddParagraph('Your voucher is attached to this email.');
   e.AddSpacer(10);
@@ -209,13 +207,13 @@ procedure TForm22.CancelBookingTemplate(AHtml: IHtmlDocumentNew);
 var
   e: THtmlElementList;
 begin
-  e := AHtml.Container.Elements;
+  e := AHtml.Content.Elements;
   e.AddHeader(h2, 'Reservation Cancelled');
 
   e.AddHr;
   e.AddParagraph('We have now cancelled the following reservation.');
   e.AddHr;
-  e.AddParagraph('Graham Murt'+'<br>'+
+  e.AddParagraph('John Smith'+'<br>'+
                  FormatDateTime('ddd, d mmm, yy', Now)+' at '+FormatDateTime('h:nn am/pm', Now)+'<br>'+
                  'Dinner'+'<br>'+
                  'x '+2.ToString+' guests');
