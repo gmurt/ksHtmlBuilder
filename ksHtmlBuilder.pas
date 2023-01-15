@@ -2,7 +2,7 @@
 *                                                                              *
 *  ksHtmlBuilder                                                               *
 *                                                                              *
-*  https://github.com/gmurt/ksEmailBuilder                                     *
+*  https://github.com/gmurt/ksHtmlBuilder                                     *
 *                                                                              *
 *  Copyright 2023 Graham Murt                                                  *
 *                                                                              *
