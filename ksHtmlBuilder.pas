@@ -38,7 +38,7 @@ uses Classes, System.Generics.Collections, Graphics
   ;
 
 type
-  IHtmlDocumentNew = interface;
+  IHtmlDocument = interface;
 
   THtmlCssStyle = class;
   THtmlElement = class;
@@ -174,7 +174,7 @@ type
   
   THtmlElement = class(TPersistent)
   private
-    [weak] FDocument: IHtmlDocumentNew;
+    [weak] FDocument: IHtmlDocument;
     FParent: THTmlElement;
     FElements: THtmlElementList;
     FContent: string;
@@ -300,7 +300,7 @@ type
     function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
 
-  IHtmlDocumentNew = interface
+  IHtmlDocument = interface
     ['{6B7716EE-3A39-493F-89D4-60077631259E}']
     function GetHead: THtmlHeadSection;
     function GetHeaderBanner: THtmlImageElement;
@@ -324,7 +324,7 @@ type
   end;
 
 
-  function CreateHtmlDocument: IHtmlDocumentNew;
+  function CreateHtmlDocument: IHtmlDocument;
 
 implementation
 
@@ -333,11 +333,10 @@ uses SysUtils, Rtti, Net.HttpClient, System.NetEncoding, Jpeg, System.TypInfo;
 type
   THtmlCssAttributeMap = TDictionary<THtmlCssAttribute,string>;
 
-  THtmlDocument = class(TInterfacedObject, IHtmlDocumentNew)
+  THtmlDocument = class(TInterfacedObject, IHtmlDocument)
   private
     FHead: THtmlHeadSection;
     FBody: THtmlBodySection;
-    //FFooter: THtmlDivElement;
     function GetAsHtml(ATarget: THtmlRenderTarget): string;
     function GetContainer: THtmlDivElement;
     function GetContent: THtmlDivElement;
@@ -367,7 +366,7 @@ var
   InternalHtmlCssAttributeMap: THtmlCssAttributeMap;
 
 
-function CreateHtmlDocument: IHtmlDocumentNew;
+function CreateHtmlDocument: IHtmlDocument;
 begin
   Result := THtmlDocument.Create;
 end;

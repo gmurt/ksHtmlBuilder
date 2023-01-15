@@ -30,11 +30,11 @@ type
   private
 
     procedure PopulateHtml;
-    procedure PaymentFailedTemplate(AHtml: IHtmlDocumentNew);
-    procedure CancelBookingTemplate(AHtml: IHtmlDocumentNew);
-    procedure VoucherTemplate(AHtml: IHtmlDocumentNew);
-    procedure PopulateBootstrapAlerts(AHtml: IHtmlDocumentNew);
-    procedure PopulateBootstrapButtons(AHtml: IHtmlDocumentNew);
+    procedure PaymentFailedTemplate(AHtml: IHtmlDocument);
+    procedure CancelBookingTemplate(AHtml: IHtmlDocument);
+    procedure VoucherTemplate(AHtml: IHtmlDocument);
+    procedure PopulateBootstrapAlerts(AHtml: IHtmlDocument);
+    procedure PopulateBootstrapButtons(AHtml: IHtmlDocument);
     { Private declarations }
   public
     { Public declarations }
@@ -50,7 +50,7 @@ const
 
 {$R *.dfm}
 
-function CreateEmailTemplateNew: IHtmlDocumentNew;
+function CreateEmailTemplateNew: IHtmlDocument;
 var
   AStyles: TCssStyleList;
   p: THtmlParagraphElement;
@@ -72,7 +72,7 @@ begin
 end;
 
 
-procedure TForm22.PopulateBootstrapButtons(AHtml: IHtmlDocumentNew);
+procedure TForm22.PopulateBootstrapButtons(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
@@ -91,7 +91,7 @@ begin
   e.AddButton('Link Button', '', THtmlButtonStyle.btnLink);
 end;
 
-procedure TForm22.PopulateBootstrapAlerts(AHtml: IHtmlDocumentNew);
+procedure TForm22.PopulateBootstrapAlerts(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
@@ -108,7 +108,7 @@ begin
 end;
 
 
-procedure TForm22.PaymentFailedTemplate(AHtml: IHtmlDocumentNew);
+procedure TForm22.PaymentFailedTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
@@ -142,7 +142,7 @@ procedure TForm22.PopulateHtml;
 var
   Doc: Variant;
   s: string;
-  AHtml: IHtmlDocumentNew;
+  AHtml: IHtmlDocument;
 begin
   if not Assigned(WebBrowser1.Document) then
     WebBrowser1.Navigate('about:blank');
@@ -166,7 +166,7 @@ begin
   Doc.Close;
 end;
 
-procedure TForm22.VoucherTemplate(AHtml: IHtmlDocumentNew);
+procedure TForm22.VoucherTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
@@ -203,7 +203,7 @@ begin
   PopulateHtml;
 end;
 
-procedure TForm22.CancelBookingTemplate(AHtml: IHtmlDocumentNew);
+procedure TForm22.CancelBookingTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
