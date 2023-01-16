@@ -10,7 +10,7 @@ It will generate HTML by calling .AsHtml with an Email or Browser parameter.  If
 ### Features
 
 - Automatically in-lines css styles for better email client support
-- Smart conversion of DIV tags (which are not 100% supported with email clients) into
+- Smart conversion of DIV tags (which are not 100% supported with email clients) into TABLE tags
 - Supports pure HTML/Css bootstrap inspired Alerts & Buttons
 - Loading/saving to/from JSON with support for standard TJsonObject and JsonDataObjects (via a conditional define
 
