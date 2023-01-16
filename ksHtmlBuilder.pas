@@ -934,7 +934,7 @@ begin
   {$IFDEF USE_JSONDATAOBJECTS}
   AJson := TJSONObject.Parse(Value) as TJSONObject;
   {$ELSE}
-  AJson := TJSONValue.ParseJSONValue(Value) as TJSONObject;
+  AJson := TJsonObject.ParseJSONValue(Value) as TJSONObject;
   {$ENDIF}
   try
     LoadFromJson(AJson);
