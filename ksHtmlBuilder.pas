@@ -42,7 +42,6 @@ type
 
   THtmlCssStyle = class;
   THtmlElement = class;
-  THtmlElementClass = class of THtmlElement;
   THtmlDivElement = class;
   THtmlHeaderElement = class;
   THtmlHrElement = class;
@@ -51,6 +50,9 @@ type
   THtmlParagraphElement = class;
   THtmlAlertElement = class;
   THtmlButtonElement = class;
+  THtmlLinkElement = class;
+
+  THtmlElementClass = class of THtmlElement;
 
   THtmlRenderTarget = (htmlBrowser, htmlEmail);
 
@@ -83,6 +85,7 @@ type
     cssMargin,
     cssMarginBottom,
     cssMarginTop,
+    cssMaxHeight,
     cssMaxWidth,
     cssMinHeight,cssObjectFit,
     cssPadding,
@@ -139,6 +142,7 @@ type
     
     function AddButton(AText, AUrl: string; AStyle: THtmlButtonStyle): THtmlButtonElement;
     function AddDiv: THtmlDivElement;
+    function AddHtml(AHtml: string): THtmlDivElement;
     function AddSpacer(AHeight: integer): THtmlDivElement;
     function AddHeader(AType: THtmlHeaderType; AText: string): THtmlHeaderElement;
     function AddHr: THtmlHrElement;
@@ -150,6 +154,7 @@ type
     function AddParagraph(AText: string): THtmlParagraphElement;
     function AddAlert(AText: string; AAlertStyle: THtmlAlertStyle): THtmlAlertElement;
 
+    function AddLink(AText, AUrl: string): THtmlLinkElement;
     procedure LoadFromJson(AJson: TJsonArray);
     procedure SaveToJson(AJson: TJsonArray);
     property ElementByID[AID: string]: THtmlElement read GetElementByID;
@@ -280,6 +285,7 @@ type
 
   THtmlHeadSection = class(THtmlElement)
   private
+    FMetaData: TStrings;
     FCssStyles: TCssStyleList;
   protected
     function GetTag(ATarget: THtmlRenderTarget): string; override;
@@ -292,6 +298,7 @@ type
     procedure LoadFromJson(AJson: TJsonObject); override;
     procedure SaveToJson(AJson: TJsonObject); override;
 
+    property MetaData: TStrings read FMetaData;
     property Styles: TCssStyleList read FCssStyles;
   end;
 
@@ -306,6 +313,7 @@ type
     function GetHeaderBanner: THtmlImageElement;
     function GetAsJson: string;
     function GetContent: THtmlDivElement;
+    function GetContainer: THtmlDivElement;
     function GetFooter: THtmlDivElement;
     function GetAsHtml(ATarget: THtmlRenderTarget): string;
     procedure SetAsJson(const Value: string);
@@ -721,6 +729,11 @@ end;
 constructor THtmlHeadSection.Create;
 begin
   inherited;
+  FMetaData := TStringList.Create;
+  FMetaData.Add('<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />');
+  FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
+  FMetaData.Add('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">');
+
   FCssStyles := TCssStyleList.Create([doOwnsValues]);
   FCssStyles.BuildDefaultStyles;
 end;
@@ -728,15 +741,14 @@ end;
 destructor THtmlHeadSection.Destroy;
 begin
   FCssStyles.Free;
+  FMetaData.Free;
   inherited;
 end;
 
 procedure THtmlHeadSection.GetInternalHtml(AStrings: TStrings; ATarget: THtmlRenderTarget);
 begin
   inherited;
-  AStrings.Add('<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />');
-  AStrings.Add('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
-  AStrings.Add('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">');
+  AStrings.AddStrings(FMetaData);
   if ATarget <> htmlEmail then
   begin
     FCssStyles.GetHtml(AStrings);
@@ -804,7 +816,7 @@ begin
   FBody.FParent := nil;
 
   fBody.Style[cssBackgroundColor] := '#eeeeee';
-  fBody.Style[cssPadding] := '24px';
+  fBody.Style[cssPadding] := '12px';
 
   AContainer := FBody.Elements.AddDiv;
   AContainer.Attribute[attId] := '_container';
@@ -878,7 +890,7 @@ end;
 function THtmlDocument.GetContent: THtmlDivElement;
 begin
   Result := GetContainer.Elements.ElementByID['_content'] as THtmlDivElement;
-end;  
+end;
 
 function THtmlDocument.GetFooter: THtmlDivElement;
 begin
@@ -1007,6 +1019,13 @@ begin
   Add(Result);
 end;
 
+function THtmlElementList.AddHtml(AHtml: string): THtmlDivElement;
+begin
+  Result := CreateClass(THtmlDivElement) as THtmlDivElement;
+  Result.Content := AHtml;
+  Add(Result);
+end;
+
 function THtmlElementList.AddAlert(AText: string; AAlertStyle: THtmlAlertStyle): THtmlAlertElement;
 begin
   Result := CreateClass(THtmlAlertElement) as THtmlAlertElement;
@@ -1037,6 +1056,14 @@ begin
   end;
   Add(Result);
 
+end;
+
+function THtmlElementList.AddLink(AText, AUrl: string): THtmlLinkElement;
+begin
+  Result := CreateClass(THtmlLinkElement) as THtmlLinkElement;
+  Result.Text := AText;
+  Result.Attribute[attHref] := AUrl;
+  Add(Result);
 end;
 
 function THtmlElementList.AddParagraph(AText: string): THtmlParagraphElement;
@@ -1404,13 +1431,12 @@ begin
   Style['.'+ButtonStyleToString(btnLight)].Attribute[cssBackground] := '#F8F9FA';
   Style['.'+ButtonStyleToString(btnLight)].Attribute[cssColor] := '#212529';
 
-  Style['.'+ButtonStyleToString(btnDanger)].Attribute[cssBackground] := '#212529';
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssBackground] := 'none';
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssColor] := '#0d6efd';
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssTextDecoration] := 'underline';
 
   AStyle := Style['.alert'];
-  AStyle.Attribute[cssFontSize] := '10pt';
+  //AStyle.Attribute[cssFontSize] := '10pt';
   AStyle.Attribute[cssPadding] := '10px';
   AStyle.Attribute[cssBorderWidth] := '1px';
   AStyle.Attribute[cssBorderStyle] := 'solid';
@@ -1570,6 +1596,7 @@ begin
   AMap.Add(cssMarginBottom, 'margin-bottom');
   AMap.Add(cssMarginTop, 'margin-top8');
   AMap.Add(cssObjectFit, 'object-fit');
+  AMap.Add(cssMaxHeight, 'max-height');
   AMap.Add(cssMaxWidth, 'max-width');
   AMap.Add(cssMinHeight, 'min-height');
 
@@ -1705,6 +1732,7 @@ initialization
   RegisterClass(THtmlParagraphElement);
   RegisterClass(THtmlAlertElement);
   RegisterClass(THtmlButtonElement);
+  RegisterClass(THtmlLinkElement);
 
 finalization
 
