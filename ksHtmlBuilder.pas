@@ -29,7 +29,7 @@ interface
 {.$DEFINE USE_JSONDATAOBJECTS}
 
 
-uses Classes, System.Generics.Collections, Graphics
+uses Windows, Classes, System.Generics.Collections, Graphics
   {$IFDEF USE_JSONDATAOBJECTS}
   , JsonDataObjects
   {$ELSE}
@@ -51,6 +51,7 @@ type
   THtmlAlertElement = class;
   THtmlButtonElement = class;
   THtmlLinkElement = class;
+  THtmlSocialIcons = class;
 
   THtmlElementClass = class of THtmlElement;
 
@@ -101,6 +102,12 @@ type
   THtmlButtonStyle = (btnPrimary, btnSecondary, btnSuccess, btnDanger, btnWarning, btnInfo, btnLight, btnLink);
   THtmlAlertStyle = (asSuccess, asDanger, asWarning);
 
+
+  THtmlSocialUrls = record
+    FFacebookUrl: string;
+    FInstagramUrl: string;
+    FTwitterUrl: string;
+  end;
 
   TCssAttributeList = class(TDictionary<THtmlCssAttribute, string>)
   private
@@ -154,6 +161,7 @@ type
     function AddParagraph(AText: string): THtmlParagraphElement;
     function AddAlert(AText: string; AAlertStyle: THtmlAlertStyle): THtmlAlertElement;
 
+    function AddSocialIcons(ADetails: THtmlSocialUrls): THtmlSocialIcons;
     function AddLink(AText, AUrl: string): THtmlLinkElement;
     procedure LoadFromJson(AJson: TJsonArray);
     procedure SaveToJson(AJson: TJsonArray);
@@ -283,6 +291,15 @@ type
 
   THtmlButtonElement = class(THtmlLinkElement);
 
+  THtmlSocialIcons = class(THtmlDivElement)
+  private
+    FSocialUrls: THtmlSocialUrls;
+  protected
+    procedure GetInternalHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); override;
+  public
+    property SocialUrls: THtmlSocialUrls read FSocialUrls write FSocialUrls;
+  end;
+
   THtmlHeadSection = class(THtmlElement)
   private
     FMetaData: TStrings;
@@ -335,6 +352,8 @@ type
   function CreateHtmlDocument: IHtmlDocument;
 
 implementation
+
+{$R *.res}
 
 uses SysUtils, Rtti, Net.HttpClient, System.NetEncoding, Jpeg, System.TypInfo;
 
@@ -488,7 +507,7 @@ begin
   end;
 
   ABlock := '<'+_ATag;
-  
+
   ABlock := Trim(ABlock + ' '+GetClassSingleLine);
   ABlock := Trim(ABlock + ' '+GetAttributesSingleLine(ATarget));
   ABlock := Trim(ABlock + ' '+GetStylesSingleLine);
@@ -731,7 +750,8 @@ begin
   inherited;
   FMetaData := TStringList.Create;
   FMetaData.Add('<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />');
-  FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
+  ///FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
+  FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />');
   FMetaData.Add('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">');
 
   FCssStyles := TCssStyleList.Create([doOwnsValues]);
@@ -1070,6 +1090,13 @@ function THtmlElementList.AddParagraph(AText: string): THtmlParagraphElement;
 begin
   Result := CreateClass(THtmlParagraphElement) as THtmlParagraphElement;
   Result.Text := AText;
+  Add(Result);
+end;
+
+function THtmlElementList.AddSocialIcons(ADetails: THtmlSocialUrls): THtmlSocialIcons;
+begin
+  Result := CreateClass(THTmlSocialIcons) as THtmlSocialICons;
+  Result.SocialUrls := ADetails;
   Add(Result);
 end;
 
@@ -1717,6 +1744,34 @@ begin
     if TryGetValue(AAtt, AValue) then
       AArray.Add(HtmlTagAttributeToString(AAtt)+'='+AValue);
   end;
+end;
+
+{ THmtlSocialIcons }
+
+procedure THtmlSocialIcons.GetInternalHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
+
+  function GetSvg(AName: string): string;
+  var
+    ResStream: TResourceStream;
+    AStrings: TStrings;
+  begin
+    ResStream := TResourceStream.Create(hInstance, AName, RT_RCDATA);
+    AStrings := TStringList.Create;
+    try
+      ResStream.Position := 0;
+      AStrings.LoadFromStream(ResStream);
+      Result := Trim(AStrings.Text);
+    finally
+      AStrings.Free;
+      ResStream.Free;
+    end;
+  end;
+
+begin
+  inherited;
+  if FSocialUrls.FTwitterUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FTwitterUrl+'">'+GetSvg('svg_twitter')+'</a>');
+  if FSocialUrls.FInstagramUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FInstagramUrl+'">'+GetSvg('svg_instagram')+'</a>');
+  if FSocialUrls.FFacebookUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FFacebookUrl+'">'+GetSvg('svg_facebook')+'</a>');
 end;
 
 initialization

@@ -163,7 +163,10 @@ begin
   Doc := WebBrowser1.Document;
   Doc.Clear;
   Doc.Write(memo1.Text);
+
   Doc.Close;
+
+  WebBrowser1.Refresh;
 end;
 
 procedure TForm22.VoucherTemplate(AHtml: IHtmlDocument);
@@ -206,6 +209,7 @@ end;
 procedure TForm22.CancelBookingTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
+  ASocialUrls: THtmlSocialUrls;
 begin
   e := AHtml.Content.Elements;
   e.AddHeader(h2, 'Reservation Cancelled');
@@ -220,6 +224,11 @@ begin
   e.AddSpacer(10);
   e.AddHr;
   e.AddParagraph('Thank you for letting us know.');
+
+  ASocialUrls.FFacebookUrl := 'www.facebook.com';
+  ASocialUrls.FInstagramUrl := 'www.instagram.com';
+  ASocialUrls.FTwitterUrl := 'https://www.twitter.com';
+  e.AddSocialIcons(ASocialUrls);
 end;
 
 procedure TForm22.rbHtmlCssClick(Sender: TObject);
