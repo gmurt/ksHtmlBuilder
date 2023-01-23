@@ -589,7 +589,10 @@ begin
           AStyle.FAttributes.TryGetValue(ACssAttribute, AValue);
           if AValue <> '' then
           begin
-            Style[ACssAttribute] := AValue;
+            if Style[ACssAttribute] = '' then
+            begin
+              Style[ACssAttribute] := AValue;
+            end;
           end;
         end;
       end;
@@ -631,7 +634,6 @@ begin
   Result := '';
   if FStyles.Count > 0 then
   begin
-    
     Result := Result + ' style="';
     for AStyle in FStyles.Keys do
     begin
@@ -749,8 +751,7 @@ constructor THtmlHeadSection.Create;
 begin
   inherited;
   FMetaData := TStringList.Create;
-  FMetaData.Add('<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />');
-  ///FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=edge">');
+  FMetaData.Add('<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />');
   FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />');
   FMetaData.Add('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">');
 
@@ -1376,7 +1377,7 @@ begin
   if AJson.FindValue('attributes') <> nil then 
   begin
     AArray := AJson.GetValue('attributes').AsType<TJSONArray>;
-    FAttributes.LoadFromJson(AArray); //.A['attributes']);
+    FAttributes.LoadFromJson(AArray);
   end;
   {$ENDIF}
 end;
@@ -1392,7 +1393,7 @@ begin
   {$ELSE}
   AArray := TJSONArray.Create;
 
-  FAttributes.SaveToJson(AArray); //.A['attributes']);
+  FAttributes.SaveToJson(AArray);
   AJson.AddPair('attributes', AArray);
 
   {$ENDIF}
@@ -1432,12 +1433,16 @@ var
   AStyle: THtmlCssStyle;
 begin
   Style['body'].Attribute[cssTextAlign] := 'center';
+  Style['body'].SetFontAttributes('Tahoma, Geneva, sans-serif', '#333333', '');
+
   Style['p'].Attribute[cssLineHeight] := '1.6';
+
+  Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
 
   AStyle := Style['.btn'];
   AStyle.Attribute[cssColor] := 'white';
   AStyle.Attribute[cssBorder] := 'none';
-  AStyle.SetFontAttributes('Arial, Helvetica, sans-serif', '#fff', '16px');
+  AStyle.SetFontAttributes('Tahoma, Geneva, sans-serif', '#fff', '');
   AStyle.Attribute[cssPadding] := '10px 20px';
   AStyle.Attribute[cssTextAlign] := 'center';
   AStyle.Attribute[cssTextDecoration] := 'none';
