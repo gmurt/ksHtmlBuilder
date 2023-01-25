@@ -112,7 +112,7 @@ procedure TForm22.PaymentFailedTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
-  AHtml.HeaderBanner.Src := 'https://www.moboinnovations.com/images/pictures/product-images/chip-pin/card-payment-header.png';
+  AHtml.HeaderBanner.Src := 'https://kernow-s3.s3.eu-west-1.amazonaws.com/www/online-pay-banner.jpg';
 
   e := AHtml.Content.Elements;
 
@@ -173,7 +173,7 @@ procedure TForm22.VoucherTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
-  AHtml.HeaderBanner.Src := 'https://i0.wp.com/banners-restaurant.com/wp-content/uploads/2020/11/Copy-of-Header-Xmas-Gift-Voucher-writing-1.png?fit=1400%2C500&ssl=1';
+  AHtml.HeaderBanner.Src := 'https://kernow-s3.s3.eu-west-1.amazonaws.com/www/gift-voucher.jpg';
   e := AHtml.Content.Elements;
   e.AddHeader(h2, 'Gift Voucher');
   e.AddHeader(h3, 'The Demo Bistro (£50)');

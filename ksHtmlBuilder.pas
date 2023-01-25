@@ -97,7 +97,7 @@ type
     cssWhiteSpace
   );
 
-  THtmlTagAttribute = (attCellSpacing, attCellPadding, attHeight, attHref, attID, attSrc, attWidth);
+  THtmlTagAttribute = (attCellSpacing, attCellPadding, attHeight, attHref, attID, attSrc, attType, attWidth, attValue);
 
   THtmlButtonStyle = (btnPrimary, btnSecondary, btnSuccess, btnDanger, btnWarning, btnInfo, btnLight, btnLink);
   THtmlAlertStyle = (asSuccess, asDanger, asWarning);
@@ -197,7 +197,7 @@ type
 
     function GetStyle(AStyle: THtmlCssAttribute): string;
     function GetAttributesSingleLine(ATarget: THtmlRenderTarget): string;
-    function GetStylesSingleLine: string;
+    function GetStylesSingleLine(ATarget: THtmlRenderTarget): string;
     procedure SetStyle(AStyle: THtmlCssAttribute; const Value: string);
     function GetClassSingleLine: string;
     function GetAttribute(AAttribute: THtmlTagAttribute): string;
@@ -510,7 +510,7 @@ begin
 
   ABlock := Trim(ABlock + ' '+GetClassSingleLine);
   ABlock := Trim(ABlock + ' '+GetAttributesSingleLine(ATarget));
-  ABlock := Trim(ABlock + ' '+GetStylesSingleLine);
+  ABlock := Trim(ABlock + ' '+GetStylesSingleLine(ATarget));
   ABlock := ABlock + '>';
 
   if _ATag = 'table' then
@@ -570,37 +570,6 @@ var
   ICount: integer;
 begin
   Result := '';
-  if ATarget = htmlEmail then
-  begin
-    // populate inline styles from css definitions...
-    AStrings := TStringList.Create;
-    try
-
-      AStrings.Add(GetTag(htmlBrowser));
-
-      for ICount := 0 to FClass.Count-1 do
-        AStrings.Add('.'+FClass[ICount]);    
-
-      for AStr in AStrings do
-      begin
-        AStyle := FDocument.Head.Styles.GetStyle(AStr);
-        for ACssAttribute in AStyle.FAttributes.Keys do
-        begin
-          AStyle.FAttributes.TryGetValue(ACssAttribute, AValue);
-          if AValue <> '' then
-          begin
-            if Style[ACssAttribute] = '' then
-            begin
-              Style[ACssAttribute] := AValue;
-            end;
-          end;
-        end;
-      end;
-    finally
-      AStrings.Free;
-    end;
-  end;
-
 
   if FAttributes.Count > 0 then
   begin
@@ -627,22 +596,65 @@ begin
   end;
 end;
 
-function THtmlElement.GetStylesSingleLine: string;
+function THtmlElement.GetStylesSingleLine(ATarget: THtmlRenderTarget): string;
 var
-  AStyle: THtmlCssAttribute;
+  //AStyle: THtmlCssAttribute;
+  AStyleStrings: TSTrings;
+  AClasses: TStrings;
+  //AClassStyle: THtmlCssStyle;
+
 begin
   Result := '';
-  if FStyles.Count > 0 then
-  begin
-    Result := Result + ' style="';
-    for AStyle in FStyles.Keys do
+
+  AStyleStrings := TStringList.Create;
+  AClasses := TStringList.Create;
+  try
+    if ATarget = htmlEmail then
+    begin
+      // extract css styles from stylesheet to inline on element for email output
+
+      AClasses.Add(GetTag(htmlBrowser));
+      for var s in FClass do
+      begin
+        AClasses.Add(s);
+        AClasses.Add('.'+s);
+      end;
+
+      for var AClass in AClasses do
+      begin
+        var AClassStyle := FDocument.Head.FCssStyles.GetStyle(AClass);
+        if AClassStyle <> nil then
+        begin
+          for var AStyle in AClassStyle.FAttributes.Keys do
+          begin
+            AStyleStrings.Values[CssAttributeNameToString(AStyle)] := AClassStyle.FAttributes.Items[AStyle];
+          end;
+        end;
+      end;
+    end;
+
+
+    for var AStyle in FStyles.Keys do
     begin
       if FStyles[AStyle] <> '' then
       begin
-        Result := Trim(Result + ' '+CssAttributeNameToString(AStyle)+': '+FStyles.Items[AStyle]+';');
+        AStyleStrings.Values[CssAttributeNameToString(AStyle)] := FStyles.Items[AStyle];
       end;
     end;
-    Result := Result + '" ';
+
+    if AStyleStrings.Count > 0 then
+    begin
+      Result := Result + ' style="';
+      for var ICount := 0 to AStyleStrings.Count-1 do
+      begin
+        Result := Trim(Result + ' '+AStyleStrings.Names[ICount]+': '+AStyleStrings.ValueFromIndex[ICount]+';');
+      end;
+      Result := Result + '" ';
+    end;
+
+  finally
+    AClasses.Free;
+    AStyleStrings.Free;
   end;
 end;
 
@@ -1440,7 +1452,7 @@ begin
   Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
 
   AStyle := Style['.btn'];
-  AStyle.Attribute[cssColor] := 'white';
+  AStyle.Attribute[cssColor] := 'red';
   AStyle.Attribute[cssBorder] := 'none';
   AStyle.SetFontAttributes('Tahoma, Geneva, sans-serif', '#fff', '');
   AStyle.Attribute[cssPadding] := '10px 20px';
@@ -1461,14 +1473,13 @@ begin
   Style['.'+ButtonStyleToString(btnInfo)].Attribute[cssColor] := '#212529';
 
   Style['.'+ButtonStyleToString(btnLight)].Attribute[cssBackground] := '#F8F9FA';
-  Style['.'+ButtonStyleToString(btnLight)].Attribute[cssColor] := '#212529';
+  Style['.'+ButtonStyleToString(btnLight)].Attribute[cssColor] := '#000';
 
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssBackground] := 'none';
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssColor] := '#0d6efd';
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssTextDecoration] := 'underline';
 
   AStyle := Style['.alert'];
-  //AStyle.Attribute[cssFontSize] := '10pt';
   AStyle.Attribute[cssPadding] := '10px';
   AStyle.Attribute[cssBorderWidth] := '1px';
   AStyle.Attribute[cssBorderStyle] := 'solid';
