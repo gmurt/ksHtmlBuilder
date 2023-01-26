@@ -562,12 +562,6 @@ end;
 function THtmlElement.GetAttributesSingleLine(ATarget: THtmlRenderTarget): string;
 var
   ATagAttribute: THtmlTagAttribute;
-  ACssAttribute: THtmlCssAttribute;
-  AStyle: THtmlCssStyle;
-  AValue: string;
-  AStrings: TStrings;
-  AStr: string;
-  ICount: integer;
 begin
   Result := '';
 
@@ -848,7 +842,7 @@ begin
   FBody.FDocument := Self;
   FBody.FParent := nil;
 
-  fBody.Style[cssBackgroundColor] := '#eeeeee';
+  fBody.Style[cssBackgroundColor] := ' #eaeaea';
   fBody.Style[cssPadding] := '12px';
 
   AContainer := FBody.Elements.AddDiv;
@@ -1452,7 +1446,9 @@ begin
   Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
 
   AStyle := Style['.btn'];
-  AStyle.Attribute[cssColor] := 'red';
+  AStyle.Attribute[cssColor] := 'white';
+  AStyle.Attribute[cssWidth] := '60%';
+  AStyle.Attribute[cssMargin] := 'auto';
   AStyle.Attribute[cssBorder] := 'none';
   AStyle.SetFontAttributes('Tahoma, Geneva, sans-serif', '#fff', '');
   AStyle.Attribute[cssPadding] := '10px 20px';
