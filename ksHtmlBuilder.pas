@@ -99,7 +99,7 @@ type
 
   THtmlTagAttribute = (attCellSpacing, attCellPadding, attHeight, attHref, attID, attSrc, attType, attWidth, attValue);
 
-  THtmlButtonStyle = (btnPrimary, btnSecondary, btnSuccess, btnDanger, btnWarning, btnInfo, btnLight, btnLink);
+  THtmlButtonStyle = (btnPrimary, btnSecondary, btnSuccess, btnDanger, btnWarning, btnInfo, btnLight, btnDark, btnLink);
   THtmlAlertStyle = (asSuccess, asDanger, asWarning);
 
 
@@ -1466,10 +1466,13 @@ begin
   Style['.'+ButtonStyleToString(btnWarning)].Attribute[cssColor] := '#212529';
 
   Style['.'+ButtonStyleToString(btnInfo)].Attribute[cssBackground] := '#0DCAF0';
-  Style['.'+ButtonStyleToString(btnInfo)].Attribute[cssColor] := '#212529';
+  Style['.'+ButtonStyleToString(btnInfo)].Attribute[cssColor] := '#fff';
 
   Style['.'+ButtonStyleToString(btnLight)].Attribute[cssBackground] := '#F8F9FA';
   Style['.'+ButtonStyleToString(btnLight)].Attribute[cssColor] := '#000';
+
+  Style['.'+ButtonStyleToString(btnDark)].Attribute[cssBackground] := '#343A40';
+  Style['.'+ButtonStyleToString(btnDark)].Attribute[cssColor] := '#000';
 
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssBackground] := 'none';
   Style['.'+ButtonStyleToString(btnLink)].Attribute[cssColor] := '#0d6efd';
