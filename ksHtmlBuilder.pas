@@ -357,6 +357,11 @@ implementation
 
 uses SysUtils, Rtti, Net.HttpClient, System.NetEncoding, Jpeg, System.TypInfo;
 
+const
+  C_FACEBOOK_ICON_URL = 'https://user-images.githubusercontent.com/1161351/215111435-0983d7e8-4804-41d5-b82c-2161777abe20.png';
+  C_INSTAGRAM_ICON_URL = 'https://user-images.githubusercontent.com/1161351/215112166-fb15ffe7-f6dd-4077-9efe-4d5a7ef1df7c.png';
+  C_TWITTER_ICON_URL = 'https://user-images.githubusercontent.com/1161351/215112156-2a73e843-4345-441f-b5e1-91c8ac30083c.png';
+
 type
   THtmlCssAttributeMap = TDictionary<THtmlCssAttribute,string>;
 
@@ -1441,7 +1446,7 @@ begin
   Style['body'].Attribute[cssTextAlign] := 'center';
   Style['body'].SetFontAttributes('Tahoma, Geneva, sans-serif', '#333333', '');
 
-  Style['p'].Attribute[cssLineHeight] := '1.6';
+  Style['p'].Attribute[cssLineHeight] := '1.5';
 
   Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
 
@@ -1636,7 +1641,7 @@ begin
   AMap.Add(cssLineHeight, 'line-height');
   AMap.Add(cssMargin, 'margin');
   AMap.Add(cssMarginBottom, 'margin-bottom');
-  AMap.Add(cssMarginTop, 'margin-top8');
+  AMap.Add(cssMarginTop, 'margin-top');
   AMap.Add(cssObjectFit, 'object-fit');
   AMap.Add(cssMaxHeight, 'max-height');
   AMap.Add(cssMaxWidth, 'max-width');
@@ -1784,9 +1789,9 @@ procedure THtmlSocialIcons.GetInternalHtml(AHtml: TStrings; ATarget: THtmlRender
 
 begin
   inherited;
-  if FSocialUrls.FTwitterUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FTwitterUrl+'">'+GetSvg('svg_twitter')+'</a>');
-  if FSocialUrls.FInstagramUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FInstagramUrl+'">'+GetSvg('svg_instagram')+'</a>');
-  if FSocialUrls.FFacebookUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FFacebookUrl+'">'+GetSvg('svg_facebook')+'</a>');
+  if FSocialUrls.FTwitterUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FTwitterUrl+'"><img border="0" width="24" height="24" src="'+C_TWITTER_ICON_URL+'"/></a>');
+  if FSocialUrls.FInstagramUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FInstagramUrl+'"><img border="0" width="24" height="24" src="'+C_INSTAGRAM_ICON_URL+'"/></a>');
+  if FSocialUrls.FFacebookUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FFacebookUrl+'"><img border="0" width="24" height="24" src="'+C_FACEBOOK_ICON_URL+'"/></a>');
 end;
 
 initialization

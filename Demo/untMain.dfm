@@ -10,6 +10,7 @@ object Form22: TForm22
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OldCreateOrder = True
   OnCreate = FormCreate
   OnResize = FormResize
   PixelsPerInch = 96
