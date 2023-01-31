@@ -42,6 +42,7 @@ type
 
   THtmlCssStyle = class;
   THtmlElement = class;
+  THtmlRawElement = class;
   THtmlDivElement = class;
   THtmlHeaderElement = class;
   THtmlHrElement = class;
@@ -149,7 +150,7 @@ type
     
     function AddButton(AText, AUrl: string; AStyle: THtmlButtonStyle): THtmlButtonElement;
     function AddDiv: THtmlDivElement;
-    function AddHtml(AHtml: string): THtmlDivElement;
+    function AddHtml(AHtml: string): THtmlRawElement;
     function AddSpacer(AHeight: integer): THtmlDivElement;
     function AddHeader(AType: THtmlHeaderType; AText: string): THtmlHeaderElement;
     function AddHr: THtmlHrElement;
@@ -223,6 +224,11 @@ type
     property CssClass: TStrings read FClass;
   end;
 
+  THtmlRawElement = class(THtmlElement)
+  protected
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
+  end;
+
 
   THtmlDivElement = class(THtmlElement)
   protected
@@ -289,7 +295,10 @@ type
     function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
 
-  THtmlButtonElement = class(THtmlLinkElement);
+  THtmlButtonElement = class(THtmlTextElement)
+  protected
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
+  end;
 
   THtmlSocialIcons = class(THtmlDivElement)
   private
@@ -511,21 +520,24 @@ begin
     Style[cssWidth] := '100%';
   end;
 
-  ABlock := '<'+_ATag;
-
-  ABlock := Trim(ABlock + ' '+GetClassSingleLine);
-  ABlock := Trim(ABlock + ' '+GetAttributesSingleLine(ATarget));
-  ABlock := Trim(ABlock + ' '+GetStylesSingleLine(ATarget));
-  ABlock := ABlock + '>';
-
-  if _ATag = 'table' then
+  if _ATag <> '' then
   begin
-    ACellCss := '';
-    APadding := Style[cssPadding];
-    if APadding <> '' then ACellCss := 'style="padding:'+APadding+';"';
-    ABlock := ABlock+'<tr><td valign="top"'+ACellCss+'>';
+    ABlock := '<'+_ATag;
+
+    ABlock := Trim(ABlock + ' '+GetClassSingleLine);
+    ABlock := Trim(ABlock + ' '+GetAttributesSingleLine(ATarget));
+    ABlock := Trim(ABlock + ' '+GetStylesSingleLine(ATarget));
+    ABlock := ABlock + '>';
+
+    if _ATag = 'table' then
+    begin
+      ACellCss := '';
+      APadding := Style[cssPadding];
+      if APadding <> '' then ACellCss := 'style="padding:'+APadding+';"';
+      ABlock := ABlock+'<tr><td valign="top"'+ACellCss+'>';
+    end;
+    AHtml.Add(ABlock);
   end;
-  AHtml.Add(ABlock);
 
 
   if Trim(FContent) <> '' then
@@ -659,7 +671,7 @@ end;
 
 function THtmlElement.HasClosingTag: Boolean;
 begin
-  Result := True;
+  Result := GetTag(htmlBrowser) <> '';
 end;
 
 procedure THtmlElement.LoadFromJson(AJson: TJsonObject);
@@ -1051,9 +1063,9 @@ begin
   Add(Result);
 end;
 
-function THtmlElementList.AddHtml(AHtml: string): THtmlDivElement;
+function THtmlElementList.AddHtml(AHtml: string): THtmlRawElement;
 begin
-  Result := CreateClass(THtmlDivElement) as THtmlDivElement;
+  Result := CreateClass(THtmlRawElement) as THtmlRawElement;
   Result.Content := AHtml;
   Add(Result);
 end;
@@ -1794,12 +1806,27 @@ begin
   if FSocialUrls.FFacebookUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FFacebookUrl+'"><img border="0" width="24" height="24" src="'+C_FACEBOOK_ICON_URL+'"/></a>');
 end;
 
+{ THtmlRawElement }
+
+function THtmlRawElement.GetTag(ATarget: THtmlRenderTarget): string;
+begin
+  Result := '';
+end;
+
+{ THtmlButtonElement }
+
+function THtmlButtonElement.GetTag(ATarget: THtmlRenderTarget): string;
+begin
+  Result := 'button';
+end;
+
 initialization
 
   InternalHtmlCssAttributeMap := THtmlCssAttributeMap.Create;
   BuildCssAttributeMap(InternalHtmlCssAttributeMap);
 
   RegisterClass(THtmlDivElement);
+  RegisterClass(THtmlRawElement);
   RegisterClass(THtmlHeaderElement);
   RegisterClass(THtmlHrElement);
   RegisterClass(THtmlBrElement);
