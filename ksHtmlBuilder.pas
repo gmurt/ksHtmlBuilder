@@ -1817,7 +1817,10 @@ end;
 
 function THtmlButtonElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
-  Result := 'button';
+  if Attribute[attType].ToLower = 'submit' then
+    Result := 'button'
+  else
+    Result := 'a';
 end;
 
 initialization
