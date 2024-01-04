@@ -29,12 +29,14 @@ type
     procedure FormResize(Sender: TObject);
   private
 
+
     procedure PopulateHtml;
     procedure PaymentFailedTemplate(AHtml: IHtmlDocument);
     procedure CancelBookingTemplate(AHtml: IHtmlDocument);
     procedure VoucherTemplate(AHtml: IHtmlDocument);
     procedure PopulateBootstrapAlerts(AHtml: IHtmlDocument);
     procedure PopulateBootstrapButtons(AHtml: IHtmlDocument);
+    procedure PopulateParagraphAlignment(AHtml: IHtmlDocument);
     { Private declarations }
   public
     { Public declarations }
@@ -64,11 +66,11 @@ begin
   AStyles.SetAllHeaders(cssColor, '#005CB7;');
   AStyles.SetAllHeaders(cssFontWeight, '400');
 
-  p := Result.Footer.Elements.AddParagraph('powered by');
-  p.Style[cssColor] := '#666666';
-  p.Style[cssMargin] := '0px';
-  AImg := Result.Footer.Elements.AddImageFromUrl('https://upload.wikimedia.org/wikipedia/commons/b/bd/Delphi_Language_Logo.png');
-  AImg.Style[cssWidth] := '36px';
+  //p := Result.Footer.Elements.AddParagraph('powered by');
+  //p.Style[cssColor] := '#666666';
+  //p.Style[cssMargin] := '0px';
+  //AImg := Result.Footer.Elements.AddImageFromUrl('https://upload.wikimedia.org/wikipedia/commons/b/bd/Delphi_Language_Logo.png');
+ // AImg.Style[cssWidth] := '36px';
 end;
 
 
@@ -76,7 +78,7 @@ procedure TForm22.PopulateBootstrapButtons(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
-  e := AHtml.Content.Elements;
+  e := AHtml.Elements;
   e.AddHeader(h2, 'Bootstrap Style Buttons');
   e.AddHr;
   e.AddParagraph('(These are defined using pure css so do not require bootstrap)');
@@ -95,7 +97,7 @@ procedure TForm22.PopulateBootstrapAlerts(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
-  e := AHtml.Content.Elements;
+  e := AHtml.Elements;
 
   e.AddHeader(h2, 'Bootstrap Style Alerts');
   e.AddHr;
@@ -107,14 +109,34 @@ begin
 
 end;
 
+procedure TForm22.PopulateParagraphAlignment(AHtml: IHtmlDocument);
+var
+  e: THtmlElementList;
+  p: THtmlParagraphElement;
+begin
+  e := AHtml.Elements;
+
+  e.AddHeader(h2, 'Paragraphs');
+  e.AddHr;
+  p := e.AddParagraph('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys '+
+                 'standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a '+
+                 'type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, '+
+                 'remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing '+
+                 'Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions '+
+                 'of Lorem Ipsum.');
+  p.Style[cssTextAlign] := 'justify';
+  p.Style[cssTextAlignlast] := 'center';
+
+end;
+
 
 procedure TForm22.PaymentFailedTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
-  AHtml.HeaderBanner.Src := 'https://kernow-s3.s3.eu-west-1.amazonaws.com/www/online-pay-banner.jpg';
+  //AHtml.HeaderBanner.Src := 'https://kernow-s3.s3.eu-west-1.amazonaws.com/www/online-pay-banner.jpg';
 
-  e := AHtml.Content.Elements;
+  e := AHtml.Elements;
 
   e.AddHeader(h2, 'Payment Failed');
   e.AddHr;
@@ -156,9 +178,10 @@ begin
   if s = 'payment failed' then PaymentFailedTemplate(AHtml);
   if s = 'cancel booking' then CancelBookingTemplate(AHtml);
   if s = 'voucher' then VoucherTemplate(AHtml);
+  if s = 'text justify' then PopulateParagraphAlignment(AHtml);
 
-  if rbHtmlCss.Checked then memo1.Text := AHtml.AsHtml[htmlBrowser];
-  if rbHtmlEmail.Checked then memo1.Text := AHtml.AsHtml[htmlEmail];
+  if rbHtmlCss.Checked then memo1.Text := AHtml.AsHtml;
+  if rbHtmlEmail.Checked then memo1.Text := AHtml.AsHtml;
 
   Doc := WebBrowser1.Document;
   Doc.Clear;
@@ -173,8 +196,8 @@ procedure TForm22.VoucherTemplate(AHtml: IHtmlDocument);
 var
   e: THtmlElementList;
 begin
-  AHtml.HeaderBanner.Src := 'https://kernow-s3.s3.eu-west-1.amazonaws.com/www/gift-voucher.jpg';
-  e := AHtml.Content.Elements;
+  //AHtml.HeaderBanner.Src := 'https://kernow-s3.s3.eu-west-1.amazonaws.com/www/gift-voucher.jpg';
+  e := AHtml.Elements;
   e.AddHeader(h2, 'Gift Voucher');
   e.AddHeader(h3, 'The Demo Bistro (£50)');
   e.AddSpacer(10);
@@ -211,7 +234,7 @@ var
   e: THtmlElementList;
   ASocialUrls: THtmlSocialUrls;
 begin
-  e := AHtml.Content.Elements;
+  e := AHtml.Elements;
   e.AddHeader(h2, 'Reservation Cancelled');
 
   e.AddHr;

@@ -375,8 +375,8 @@ type
     FBackgroundColor: string;
     FElements: THtmlElementList;
     FReference: string;
-    FFooterImage: THtmlFooterImage;
     FMaxWidth: integer;
+    FFooterImage: THtmlFooterImage;
     function GetAsHtml: string;
     function GetHead: THtmlHeadSection;
     function GetAsJson: string;
@@ -452,8 +452,7 @@ end;
 
 function ButtonStyleToString(AStyle: THtmlButtonStyle): string;
 begin
-  Result := LowerCase(StringReplace(TRttiEnumerationType.GetName(AStyle), 'btn',
-    'btn-', [rfIgnoreCase]));
+  Result := LowerCase(StringReplace(TRttiEnumerationType.GetName(AStyle), 'btn', 'btn-', [rfIgnoreCase]));
 end;
 
 function AlertStyleToString(AStyle: THtmlAlertStyle): string;
@@ -951,14 +950,14 @@ begin
     if FFooterImage.FImgSource <> '' then
     begin
       AStrings.Add('<a target="_blank" href="' + FFooterImage.FTargetUrl +
-        '"><img src="' + FFooterImage.FImgSource + '"/></a>');
+        '"><img style="max-width:100px" src="' + FFooterImage.FImgSource + '"/></a>');
     end;
 
     if FReference <> '' then
       AStrings.Add
         ('<br><br><p align="center" style="font-size: 9px; color:#aaaaaa;">Ref: '
         + FReference + '</p><br>');
-
+    AStrings.Add('<p> </b>');
     AStrings.Add('</body>');
 
     AStrings.Add('</html>');
@@ -1040,7 +1039,7 @@ end;
 procedure THtmlDocument.SaveToJson(AJson: TJsonObject);
 {$IFNDEF USE_JSONDATAOBJECTS}
 var
-  AHead, ABody: TJsonObject;
+  AHead: TJsonObject;
 {$ENDIF}
 begin
 {$IFDEF USE_JSONDATAOBJECTS}
@@ -1119,18 +1118,19 @@ begin
   Result := CreateClass(THtmlButtonElement) as THtmlButtonElement;
   Result.CssClass.Add('btn');
   Result.CssClass.Add(ButtonStyleToString(AStyle));
-  Result.Style[cssLineHeight] := '14px';
+  //Result.Style[cssLineHeight] := '14px';
   // Result.Style[cssDisplay] := 'block';
   // Result.Style[cssMarginTop] := '8px';
   // Result.Style[cssMarginBottom] := '8px';
-  Result.Style[cssPadding] := '8px';
-  Result.Style[cssMaxHeight] := '32px';
-  Result.Style[cssMaxWidth] := '200px';
+  //Result.Style[cssPadding] := '8px';
+  //Result.Style[cssMaxHeight] := '32px';
+  Result.Style[cssBorderRadius] := '8px';
+  //Result.Style[cssMaxWidth] := '200px';
   Result.FUrl := AUrl;
-  AFontColor := '#fff';
-  Result.Content := '<a href="' + AUrl +
-    '" style="text-decoration: none; color: ' + AFontColor + ';">' +
-    AText + '</a>';
+  //AFontColor := '#fff';
+  //Result.Content := '<a href="' + AUrl +
+   // '" style="text-decoration: none; "><p>' +
+  //  AText + '</p></a>';
   Add(Result);
 
 end;
@@ -1412,8 +1412,8 @@ end;
 procedure THtmlHrElement.GetHtml(AHtml: TStrings);
 begin
   // inherited;
-  AHtml.Add(
-    '<div style="background: #d9d9d9; font-size: 1px; line-height: 1px;">&nbsp;</div>');
+  AHtml.Add('<div style="background: #d9d9d9; font-size: 1px; line-height: 1px;">&nbsp;</div>');
+  //'<div style="height: 16px; border: 1px solid silver;"><div style="background: #d9d9d9; font-size: 1px; line-height: 1px;">&nbsp;</div></div>');
 
 end;
 
@@ -1584,17 +1584,18 @@ begin
   Style['body'].Attribute[cssTextAlign] := 'center';
   Style['body'].SetFontAttributes('Tahoma, Geneva, sans-serif', '#333333', '');
 
-  // Style['p'].Attribute[cssLineHeight] := '1.5';
+  Style['p'].Attribute[cssLineHeight] := '1.6';
 
   // Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
 
   AStyle := Style['.btn'];
   AStyle.Attribute[cssColor] := 'white';
-  AStyle.Attribute[cssWidth] := '60%';
+  //AStyle.Attribute[cssWidth] := '60%';
   AStyle.Attribute[cssMargin] := 'auto';
   AStyle.Attribute[cssBorder] := 'none';
-  AStyle.SetFontAttributes('Tahoma, Geneva, sans-serif', '#fff', '');
-  AStyle.Attribute[cssPadding] := '10px 20px';
+  //AStyle.SetFontAttributes('Tahoma, Geneva, sans-serif', '#fff', '');
+  //AStyle.Attribute[cssPadding] := '30px 30px';
+  AStyle.Attribute[cssBorderRadius] := '8px';
   AStyle.Attribute[cssTextAlign] := 'center';
   AStyle.Attribute[cssTextDecoration] := 'none';
   AStyle.Attribute[cssCursor] := 'pointer';

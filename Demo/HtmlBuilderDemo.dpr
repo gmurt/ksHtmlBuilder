@@ -3,6 +3,7 @@ program HtmlBuilderDemo;
 
 
 uses
+  //FastMM4,
   Vcl.Forms,
   untMain in 'untMain.pas' {Form22},
   ksHtmlBuilder in '..\ksHtmlBuilder.pas';

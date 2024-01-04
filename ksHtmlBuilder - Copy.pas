@@ -1,40 +1,41 @@
 { ******************************************************************************
-  *                                                                              *
-  *  ksHtmlBuilder                                                               *
-  *                                                                              *
-  *  https://github.com/gmurt/ksHtmlBuilder                                     *
-  *                                                                              *
-  *  Copyright 2023 Graham Murt                                                  *
-  *                                                                              *
-  *  email: graham@kernow-software.co.uk                                         *
-  *                                                                              *
-  *  Licensed under the Apache License, Version 2.0 (the "License");             *
-  *  you may not use this file except in compliance with the License.            *
-  *  You may obtain a copy of the License at                                     *
-  *                                                                              *
-  *    http://www.apache.org/licenses/LICENSE-2.0                                *
-  *                                                                              *
-  *  Unless required by applicable law or agreed to in writing, software         *
-  *  distributed under the License is distributed on an "AS IS" BASIS,           *
-  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    *
-  *  See the License for the specific language governing permissions and         *
-  *  limitations under the License.                                              *
-  *                                                                              *
-  ******************************************************************************* }
+*                                                                              *
+*  ksHtmlBuilder                                                               *
+*                                                                              *
+*  https://github.com/gmurt/ksHtmlBuilder                                     *
+*                                                                              *
+*  Copyright 2023 Graham Murt                                                  *
+*                                                                              *
+*  email: graham@kernow-software.co.uk                                         *
+*                                                                              *
+*  Licensed under the Apache License, Version 2.0 (the "License");             *
+*  you may not use this file except in compliance with the License.            *
+*  You may obtain a copy of the License at                                     *
+*                                                                              *
+*    http://www.apache.org/licenses/LICENSE-2.0                                *
+*                                                                              *
+*  Unless required by applicable law or agreed to in writing, software         *
+*  distributed under the License is distributed on an "AS IS" BASIS,           *
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    *
+*  See the License for the specific language governing permissions and         *
+*  limitations under the License.                                              *
+*                                                                              *
+*******************************************************************************}
 
 unit ksHtmlBuilder;
 
 interface
 
-{$DEFINE USE_JSONDATAOBJECTS}
+{.$DEFINE USE_JSONDATAOBJECTS}
+
 
 uses Windows, Classes, System.Generics.Collections, Graphics
-{$IFDEF USE_JSONDATAOBJECTS}
-    , JsonDataObjects
-{$ELSE}
-    , Json
-{$ENDIF}
-    ;
+  {$IFDEF USE_JSONDATAOBJECTS}
+  , JsonDataObjects
+  {$ELSE}
+  , Json
+  {$ENDIF}
+  ;
 
 type
   IHtmlDocument = interface;
@@ -56,37 +57,62 @@ type
 
   THtmlElementClass = class of THtmlElement;
 
-  // THtmlRenderTarget = (htmlBrowser, htmlEmail);
+  THtmlRenderTarget = (htmlBrowser, htmlEmail);
 
-  THtmlSection = (htmlBody, htmlHead, htmlHtml, htmlScript, htmlStyle);
+  THtmlSection = (htmlBody,
+                  htmlHead,
+                  htmlHtml,
+                  htmlScript,
+                  htmlStyle);
 
   THtmlHeaderType = (h1, h2, h3, h4, h5, h6);
 
-  THtmlCssAttribute = (cssBackground, cssBackgroundColor, cssBorder,
-    cssBorderCollapse, cssBorderColor, cssBorderRadius, cssBorderStyle,
-    cssBorderWidth, cssColor, cssCursor, cssDisplay, cssFontFamily, cssFontSize,
-    cssFontStyle, cssFontWeight, cssHeight, cssLineHeight, cssMargin,
-    cssMarginBottom, cssMarginTop, cssMaxHeight, cssMaxWidth, cssMinHeight,
-    cssObjectFit, cssPadding, cssPaddingTop, cssTextAlign, cssTextAlignLast,
-    cssTextDecoration, cssVerticalAlign, cssWidth, cssWhiteSpace);
+  THtmlCssAttribute = (
+    cssBackground,
+    cssBackgroundColor,
+    cssBorder,
+    cssBorderCollapse,
+    cssBorderColor,
+    cssBorderRadius,
+    cssBorderStyle,
+    cssBorderWidth,
+    cssColor,
+    cssCursor,
+    cssDisplay,
+    cssFontFamily,
+    cssFontSize,
+    cssFontStyle,
+    cssFontWeight,
+    cssHeight,
+    cssLineHeight,
+    cssMargin,
+    cssMarginBottom,
+    cssMarginTop,
+    cssMaxHeight,
+    cssMaxWidth,
+    cssMinHeight,cssObjectFit,
+    cssPadding,
+    cssPaddingTop,
+    cssTextAlign,
+    cssTextAlignLast,
+    cssTextDecoration,
+    cssVerticalAlign,
+    cssWidth,
+    cssWhiteSpace
+  );
 
-  THtmlTagAttribute = (attAlign, attAlt, attBgColor, attCellSpacing,
-    attCellPadding, attHeight, attHref, attID, attSrc, attType, attWidth,
-    attValue);
 
-  THtmlButtonStyle = (btnPrimary, btnSecondary, btnSuccess, btnDanger,
-    btnWarning, btnInfo, btnLight, btnDark, btnLink);
+
+  THtmlTagAttribute = (attAlign, attBgColor, attCellSpacing, attCellPadding, attHeight, attHref, attID, attSrc, attType, attWidth, attValue);
+
+  THtmlButtonStyle = (btnPrimary, btnSecondary, btnSuccess, btnDanger, btnWarning, btnInfo, btnLight, btnDark, btnLink);
   THtmlAlertStyle = (asSuccess, asDanger, asWarning);
+
 
   THtmlSocialUrls = record
     FFacebookUrl: string;
     FInstagramUrl: string;
     FTwitterUrl: string;
-  end;
-
-  THtmlFooterImage = record
-    FImgSource: string;
-    FTargetUrl: string;
   end;
 
   TCssAttributeList = class(TDictionary<THtmlCssAttribute, string>)
@@ -116,35 +142,30 @@ type
     property Style[AName: string]: THtmlCssStyle read GetStyle; default;
   end;
 
-  THtmlElementList = class(TObjectList<THtmlElement>)
+
+  THtmlElementList = class(TObjectList<THTmlElement>)
   private
-    [weak]
-    FDocument: IHtmlDocument;
     FOwner: THtmlElement;
     function AddImageStream(AStream: TStream): THtmlImageElement;
     function CreateElement(AObj: string): THtmlElement;
     function CreateClass(AClass: THtmlElementClass): THtmlElement;
     function GetElementByID(AID: string): THtmlElement;
   public
-    constructor Create(AOwner: THtmlElement; ADocument: IHtmlDocument);
-
-    function AddButton(AText, AUrl: string; AStyle: THtmlButtonStyle)
-      : THtmlButtonElement;
+    constructor Create(AOwner: THtmlElement);
+    
+    function AddButton(AText, AUrl: string; AStyle: THtmlButtonStyle): THtmlButtonElement;
     function AddDiv: THtmlDivElement;
     function AddHtml(AHtml: string): THtmlRawElement;
     function AddSpacer(AHeight: integer): THtmlSpacerElement;
-    function AddHeader(AType: THtmlHeaderType; AText: string)
-      : THtmlHeaderElement;
+    function AddHeader(AType: THtmlHeaderType; AText: string): THtmlHeaderElement;
     function AddHr: THtmlHrElement;
     function AddBr: THtmlBrElement;
 
     function AddImage(AImg: TGraphic): THtmlImageElement; overload;
     function AddImageFromFile(AFilename: string): THtmlImageElement; overload;
-    function AddImageFromUrl(ASrc: string; const AInline: Boolean = False)
-      : THtmlImageElement; overload;
+    function AddImageFromUrl(ASrc: string; const AInline: Boolean = False): THtmlImageElement; overload;
     function AddParagraph(AText: string): THtmlParagraphElement;
-    function AddAlert(AText: string; AAlertStyle: THtmlAlertStyle)
-      : THtmlAlertElement;
+    function AddAlert(AText: string; AAlertStyle: THtmlAlertStyle): THtmlAlertElement;
 
     function AddSocialIcons(ADetails: THtmlSocialUrls): THtmlSocialIcons;
     function AddLink(AText, AUrl: string): THtmlLinkElement;
@@ -166,15 +187,14 @@ type
     procedure GetHtml(AStrings: TStrings);
     procedure SetBorderAttributes(AColor, AWidth, AStyle: string);
     procedure SetFontAttributes(AFamily, AColor, ASize: string);
-    property Attribute[AName: THtmlCssAttribute]: string read GetAttribute
-      write SetAttribute;
+    property Attribute[AName: THtmlCssAttribute]: string read GetAttribute write SetAttribute;
   end;
 
+  
   THtmlElement = class(TPersistent)
   private
-    [weak]
-    FDocument: IHtmlDocument;
-    FParent: THtmlElement;
+    [weak] FDocument: IHtmlDocument;
+    FParent: THTmlElement;
     FElements: THtmlElementList;
     FContent: string;
     FClass: TStrings;
@@ -182,19 +202,19 @@ type
     FStyles: TCssAttributeList;
 
     function GetStyle(AStyle: THtmlCssAttribute): string;
-    function GetAttributesSingleLine: string;
-    function GetStylesSingleLine: string;
+    function GetAttributesSingleLine(ATarget: THtmlRenderTarget): string;
+    function GetStylesSingleLine(ATarget: THtmlRenderTarget): string;
     procedure SetStyle(AStyle: THtmlCssAttribute; const Value: string);
     function GetClassSingleLine: string;
     function GetAttribute(AAttribute: THtmlTagAttribute): string;
     procedure SetAttribute(AAttribute: THtmlTagAttribute; const Value: string);
   protected
-    function GetTag: string; virtual; abstract;
+    function GetTag(ATarget: THtmlRenderTarget): string; virtual; abstract;
     function HasClosingTag: Boolean; virtual;
-    procedure GetHtml(AHtml: TStrings); virtual;
-    procedure GetInternalHtml(AHtml: TStrings); virtual;
+    procedure GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); virtual;
+    procedure GetInternalHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); virtual;
   public
-    constructor Create(ADocument: IHtmlDocument); virtual;
+    constructor Create; virtual;
     procedure Clear;
     procedure LoadFromJson(AJson: TJsonObject); virtual;
     procedure SaveToJson(AJson: TJsonObject); virtual;
@@ -202,40 +222,39 @@ type
     destructor Destroy; override;
     property Content: string read FContent write FContent;
     property Elements: THtmlElementList read FElements;
-    property Attribute[AAttribute: THtmlTagAttribute]: string read GetAttribute
-      write SetAttribute;
+    property Attribute[AAttribute: THtmlTagAttribute]: string read GetAttribute write SetAttribute;
     procedure SetBorderAttributes(AColor, AWidth, AStyle: string);
     procedure SetFontAttributes(AFamily, AColor, ASize: string);
-    property Style[AStyle: THtmlCssAttribute]: string read GetStyle
-      write SetStyle;
+    property Style[AStyle: THtmlCssAttribute]: string read GetStyle write SetStyle;
     property CssClass: TStrings read FClass;
   end;
 
   THtmlRawElement = class(THtmlElement)
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
+
 
   THtmlDivElement = class(THtmlElement)
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
 
   THtmlSpacerElement = class(THtmlDivElement)
   protected
-    procedure GetHtml(AHtml: TStrings); override;
+    procedure GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); override;
   end;
 
   THtmlHrElement = class(THtmlElement)
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
     function HasClosingTag: Boolean; override;
-    procedure GetHtml(AHtml: TStrings); override;
+    procedure GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); override;
   end;
 
   THtmlBrElement = class(THtmlElement)
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
     function HasClosingTag: Boolean; override;
   end;
 
@@ -244,11 +263,11 @@ type
     function GetSrc: string;
     procedure SetSrc(const Value: string);
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
     function HasClosingTag: Boolean; override;
-    procedure GetHtml(AHtml: TStrings); override;
+    procedure GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); override;
   public
-    constructor Create(ADocument: IHtmlDocument); override;
+    constructor Create; override;
     property Src: string read GetSrc write SetSrc;
   end;
 
@@ -264,46 +283,40 @@ type
   private
     FHeaderType: THtmlHeaderType;
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   public
     property HeaderType: THtmlHeaderType read FHeaderType write FHeaderType;
   end;
 
   THtmlParagraphElement = class(THtmlTextElement)
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
 
   THtmlAlertElement = class(THtmlTextElement)
   private
     FStyle: THtmlAlertStyle;
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   public
     property Style: THtmlAlertStyle read FStyle write FStyle;
   end;
 
   THtmlLinkElement = class(THtmlTextElement)
   protected
-    function GetTag: string; override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
 
-  THtmlButtonElement = class(THtmlDivElement)
+  THtmlButtonElement = class(THtmlTextElement)
   protected
-    FUrl: string;
-  protected
-    function GetTag: string; override;
-    procedure GetHtml(AHtml: TStrings); override;
-  public
-    procedure LoadFromJson(AJson: TJsonObject); override;
-    procedure SaveToJson(AJson: TJsonObject); override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
   end;
 
   THtmlSocialIcons = class(THtmlDivElement)
   private
     FSocialUrls: THtmlSocialUrls;
   protected
-    procedure GetInternalHtml(AHtml: TStrings); override;
+    procedure GetInternalHtml(AHtml: TStrings; ATarget: THtmlRenderTarget); override;
   public
     property SocialUrls: THtmlSocialUrls read FSocialUrls write FSocialUrls;
   end;
@@ -314,10 +327,10 @@ type
     FMetaData: TStrings;
     FCssStyles: TCssStyleList;
   protected
-    function GetTag: string; override;
-    procedure GetInternalHtml(AStrings: TStrings); override;
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
+    procedure GetInternalHtml(AStrings: TStrings; ATarget: THtmlRenderTarget); override;
   public
-    constructor Create(ADocument: IHtmlDocument); override;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Clear;
 
@@ -328,29 +341,37 @@ type
     property Styles: TCssStyleList read FCssStyles;
   end;
 
+  THtmlBodySection = class(THtmlElement)
+  protected
+    function GetTag(ATarget: THtmlRenderTarget): string; override;
+  end;
+
   IHtmlDocument = interface
     ['{6B7716EE-3A39-493F-89D4-60077631259E}']
     function GetHead: THtmlHeadSection;
-    function GetElements: THtmlElementList;
+    function GetHeaderBanner: THtmlImageElement;
     function GetAsJson: string;
-    function GetAsHtml: string;
-    function GetReference: string;
+    function GetContent: THtmlDivElement;
+    function GetContainer: THtmlDivElement;
+    function GetFooter: THtmlDivElement;
+    function GetAsHtml(ATarget: THtmlRenderTarget): string;
     procedure SetAsJson(const Value: string);
-    procedure SetReference(const Value: string);
     procedure LoadFromJson(AJson: TJsonObject);
     procedure SaveToJson(AJson: TJsonObject);
 
-    procedure SaveHtmlToFile(AFilename: string);
+    procedure SaveHtmlToFile(AFilename: string; const AFormat: THtmlRenderTarget = htmlBrowser);
     procedure Clear;
-    procedure SetFooterImage(AImg, AUrl: string);
     property Head: THtmlHeadSection read GetHead;
-    property Elements: THtmlElementList read GetElements;
-    property AsHtml: string read GetAsHtml;
+    property HeaderBanner: THtmlImageElement read GetHeaderBanner;
+    property Content: THtmlDivElement read GetContent;
+    property Footer: THtmlDivElement read GetFooter;
+    property AsHtml[ATarget: THtmlRenderTarget]: string read GetAsHtml;
     property AsJson: string read GetAsJson write SetAsJson;
-    property Reference: string read GetReference write SetReference;
+
   end;
 
-function CreateHtmlDocument(AMaxWidth: integer): IHtmlDocument;
+
+  function CreateHtmlDocument: IHtmlDocument;
 
 implementation
 
@@ -359,56 +380,51 @@ implementation
 uses SysUtils, Rtti, Net.HttpClient, System.NetEncoding, Jpeg, System.TypInfo;
 
 const
-  C_FACEBOOK_ICON_URL =
-    'https://user-images.githubusercontent.com/1161351/215111435-0983d7e8-4804-41d5-b82c-2161777abe20.png';
-  C_INSTAGRAM_ICON_URL =
-    'https://user-images.githubusercontent.com/1161351/215112166-fb15ffe7-f6dd-4077-9efe-4d5a7ef1df7c.png';
-  C_TWITTER_ICON_URL =
-    'https://user-images.githubusercontent.com/1161351/215112156-2a73e843-4345-441f-b5e1-91c8ac30083c.png';
+  C_FACEBOOK_ICON_URL = 'https://user-images.githubusercontent.com/1161351/215111435-0983d7e8-4804-41d5-b82c-2161777abe20.png';
+  C_INSTAGRAM_ICON_URL = 'https://user-images.githubusercontent.com/1161351/215112166-fb15ffe7-f6dd-4077-9efe-4d5a7ef1df7c.png';
+  C_TWITTER_ICON_URL = 'https://user-images.githubusercontent.com/1161351/215112156-2a73e843-4345-441f-b5e1-91c8ac30083c.png';
 
 type
-  THtmlCssAttributeMap = TDictionary<THtmlCssAttribute, string>;
+  THtmlCssAttributeMap = TDictionary<THtmlCssAttribute,string>;
 
   THtmlDocument = class(TInterfacedObject, IHtmlDocument)
   private
     FHead: THtmlHeadSection;
-    FBackgroundColor: string;
-    FElements: THtmlElementList;
-    FReference: string;
-    FFooterImage: THtmlFooterImage;
-    FMaxWidth: integer;
-    function GetAsHtml: string;
+    FBody: THtmlBodySection;
+
+    FContainer: THtmlDivElement;
+    function GetAsHtml(ATarget: THtmlRenderTarget): string;
+    function GetContainer: THtmlDivElement;
+    function GetContent: THtmlDivElement;
     function GetHead: THtmlHeadSection;
+    function GetFooter: THtmlDivElement;
+    function GetHeaderBanner: THtmlImageElement;
     function GetAsJson: string;
     procedure SetAsJson(const Value: string);
-    function GetElements: THtmlElementList;
-    function GetBackgroundColor: string;
-    procedure SetBackgroundColor(const Value: string);
-    function GetReference: string;
-    procedure SetReference(const Value: string);
   protected
     procedure Clear;
-    procedure SetFooterImage(AImg, AUrl: string);
-    procedure SaveHtmlToFile(AFilename: string);
+    procedure SaveHtmlToFile(AFilename: string; const AFormat: THtmlRenderTarget = htmlBrowser);
     procedure LoadFromJson(AJson: TJsonObject);
     procedure SaveToJson(AJson: TJsonObject);
     property Head: THtmlHeadSection read GetHead;
-    property BackgroundColor: string read GetBackgroundColor
-      write SetBackgroundColor;
-    property Reference: string read GetReference write SetReference;
-    property AsHtml: string read GetAsHtml;
+    property HeaderBanner: THtmlImageElement read GetHeaderBanner;
+    property Content: THtmlDivElement read GetContent;
+    property Footer: THtmlDivElement read GetFooter;
+    property AsHtml[ATarget: THtmlRenderTarget]: string read GetAsHtml;
     property AsJson: string read GetAsJson write SetAsJson;
   public
-    constructor Create(AMaxWidth: integer); virtual;
+    constructor Create; virtual;
     destructor Destroy; override;
   end;
+
 
 var
   InternalHtmlCssAttributeMap: THtmlCssAttributeMap;
 
-function CreateHtmlDocument(AMaxWidth: integer): IHtmlDocument;
+
+function CreateHtmlDocument: IHtmlDocument;
 begin
-  Result := THtmlDocument.Create(AMaxWidth);
+  Result := THtmlDocument.Create;
 end;
 
 { THtmlDivElement }
@@ -420,19 +436,18 @@ begin
 end;
 
 function HtmlTagStringToAttribute(AStr: string): THtmlTagAttribute;
-begin
+begin                   
   AStr := AStr.ToLower;
   if Pos('att', AStr) <> 1 then
     AStr := 'att' + AStr;
-
-  Result := THtmlTagAttribute(GetEnumValue(TypeInfo(THtmlTagAttribute), AStr));;
+  
+  Result := THtmlTagAttribute(GetEnumValue(TypeInfo(THtmlTagAttribute), aStr));;
 end;
 
 function HtmlTagAttributeToString(AAttribute: THtmlTagAttribute): string;
 begin
-  Result := StringReplace(TRttiEnumerationType.GetName(AAttribute), 'att', '',
-    [rfReplaceAll]);
-  Result := Result.ToLower;
+  Result := StringReplace(TRttiEnumerationType.GetName(AAttribute), 'att', '', [rfReplaceAll]);
+  Result := Result.ToLower;             
 end;
 
 function CssAttributeNameToString(AStyle: THtmlCssAttribute): string;
@@ -447,33 +462,29 @@ begin
   AStr := StringReplace(AStr, '-', '', [rfReplaceAll]);
   if Pos('css', AStr) <> 1 then
     AStr := 'css' + AStr;
-  Result := THtmlCssAttribute(GetEnumValue(TypeInfo(THtmlCssAttribute), AStr));
+  Result := THtmlCssAttribute(GetEnumValue(TypeInfo(THtmlCssAttribute), aStr));
 end;
 
 function ButtonStyleToString(AStyle: THtmlButtonStyle): string;
 begin
-  Result := LowerCase(StringReplace(TRttiEnumerationType.GetName(AStyle), 'btn',
-    'btn-', [rfIgnoreCase]));
+  Result := LowerCase(StringReplace(TRttiEnumerationType.GetName(AStyle), 'btn', 'btn-', [rfIgnoreCase]));
 end;
 
 function AlertStyleToString(AStyle: THtmlAlertStyle): string;
 begin
   Result := '';
   case AStyle of
-    asSuccess:
-      Result := 'alert-success';
-    asDanger:
-      Result := 'alert-danger';
-    asWarning:
-      Result := 'alert-warning';
+    asSuccess: Result := 'alert-success';
+    asDanger: Result := 'alert-danger';
+    asWarning: Result := 'alert-warning';
   end;
 end;
 
-function THtmlDivElement.GetTag: string;
+function THtmlDivElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
-  // Result := 'div';
-  // if ATarget = htmlEmail then
-  Result := 'table';
+  Result := 'div';
+  if ATarget = htmlEmail then
+    Result := 'table';
 end;
 
 { THtmlElement }
@@ -487,15 +498,13 @@ begin
   FStyles.Clear;
 end;
 
-constructor THtmlElement.Create(ADocument: IHtmlDocument);
+constructor THtmlElement.Create;
 begin
   inherited Create;
-  FDocument := ADocument;
-  FElements := THtmlElementList.Create(Self, FDocument);
+  FElements := THtmlElementList.Create(Self);
   FClass := TStringList.Create;
   FAttributes := THtmlAttributeList.Create;
   FStyles := TCssAttributeList.Create;
-
 end;
 
 destructor THtmlElement.Destroy;
@@ -507,77 +516,76 @@ begin
   inherited;
 end;
 
-procedure THtmlElement.GetHtml(AHtml: TStrings);
+procedure THtmlElement.GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
 var
-  AElement: THtmlElement;
+  AElement: THTmlElement;
   ABlock: string;
   _ATag: string;
   APadding: string;
   ACellCss: string;
 
 begin
-  _ATag := GetTag;
-  if (Self is THtmlDivElement) then
+  _ATag := GetTag(ATarget);
+  if (ATarget = htmlEmail) and (Self is THtmlDivElement) then
   begin
     _ATag := 'table';
     Attribute[attCellSpacing] := '0';
+    Attribute[attCellPadding] := '0';
     Style[cssBorderCollapse] := 'collapse';
     Style[cssWidth] := '100%';
   end;
 
   if _ATag <> '' then
   begin
-    ABlock := '<' + _ATag;
+    ABlock := '<'+_ATag;
 
-    ABlock := Trim(ABlock + ' ' + GetClassSingleLine);
-    ABlock := Trim(ABlock + ' ' + GetAttributesSingleLine);
-    ABlock := Trim(ABlock + ' ' + GetStylesSingleLine);
+    ABlock := Trim(ABlock + ' '+GetClassSingleLine);
+    ABlock := Trim(ABlock + ' '+GetAttributesSingleLine(ATarget));
+    ABlock := Trim(ABlock + ' '+GetStylesSingleLine(ATarget));
 
     if _ATag = 'table' then
     begin
       ACellCss := '';
       APadding := Style[cssPadding];
-      if APadding <> '' then
-        ACellCss := 'style="padding:' + APadding + ';" ';
-      ABlock := ABlock + '><tr><td valign="top"' + ACellCss;
+      if APadding <> '' then ACellCss := 'style="padding:'+APadding+';" ';
+      ABlock := ABlock+'><tr><td valign="top"'+ACellCss;
     end;
     case HasClosingTag of
-      True:
-        ABlock := ABlock + '>';
-      False:
-        ABlock := ABlock + '/>';
+      True: ABlock := ABlock + '>';
+      False: Ablock := ABlock + '/>';
     end;
     AHtml.Add(ABlock);
   end;
+
 
   if Trim(FContent) <> '' then
   begin
     AHtml.Add(Trim(FContent));
   end;
 
-  GetInternalHtml(AHtml);
+  GetInternalHtml(AHtml, ATarget);
 
   for AElement in Elements do
   begin
-    AElement.GetHtml(AHtml);
+    AElement.GetHtml(AHtml, ATarget);
   end;
 
   if HasClosingTag then
   begin
 
-    ABlock := '</' + _ATag + '>';
+    ABlock := '</'+_ATag+'>';
     if _ATag = 'table' then
     begin
-      ABlock := '</td></tr>' + ABlock;
+      ABlock := '</td></tr>'+ABlock;
     end;
 
     AHtml.Add(ABlock);
   end
-  // else
-  // AHtml.Text := AHtml.Text + '
+  //else
+  //  AHtml.Text := AHtml.Text + '
 end;
 
-procedure THtmlElement.GetInternalHtml(AHtml: TStrings);
+procedure THtmlElement.GetInternalHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
 begin
   // overridden in descendant classes
 end;
@@ -592,7 +600,7 @@ begin
   FAttributes.TryGetValue(AAttribute, Result);
 end;
 
-function THtmlElement.GetAttributesSingleLine: string;
+function THtmlElement.GetAttributesSingleLine(ATarget: THtmlRenderTarget): string;
 var
   ATagAttribute: THtmlTagAttribute;
 begin
@@ -604,8 +612,7 @@ begin
     begin
       if FAttributes[ATagAttribute] <> '' then
       begin
-        Result := Trim(Result + ' ' + HtmlTagAttributeToString(ATagAttribute) +
-          '="' + FAttributes.Items[ATagAttribute] + '" ');
+        Result := Trim(Result + ' '+HtmlTagAttributeToString(ATagAttribute)+'="'+FAttributes.Items[ATagAttribute]+'" ');
       end;
     end;
   end;
@@ -619,17 +626,17 @@ begin
   begin
     Result := 'class="';
     for AClass in FClass do
-      Result := Result + StringReplace(AClass, '.', '', []) + ' ';
+      Result := Result + StringReplace(AClass, '.', '', [])+' ';
     Result := Trim(Result) + '" ';
   end;
 end;
 
-function THtmlElement.GetStylesSingleLine: string;
+function THtmlElement.GetStylesSingleLine(ATarget: THtmlRenderTarget): string;
 var
-  // AStyle: THtmlCssAttribute;
-  AStyleStrings: TStrings;
+  //AStyle: THtmlCssAttribute;
+  AStyleStrings: TSTrings;
   AClasses: TStrings;
-  // AClassStyle: THtmlCssStyle;
+  //AClassStyle: THtmlCssStyle;
 
 begin
   Result := '';
@@ -637,46 +644,45 @@ begin
   AStyleStrings := TStringList.Create;
   AClasses := TStringList.Create;
   try
-
-    // extract css styles from stylesheet to inline on element for email output
-
-    AClasses.Add(GetTag);
-    for var s in FClass do
+    if ATarget = htmlEmail then
     begin
-      AClasses.Add(s);
-      AClasses.Add('.' + s);
-    end;
+      // extract css styles from stylesheet to inline on element for email output
 
-    for var AClass in AClasses do
-    begin
-      var
-      AClassStyle := FDocument.Head.FCssStyles.GetStyle(AClass);
-      if AClassStyle <> nil then
+      AClasses.Add(GetTag(htmlBrowser));
+      for var s in FClass do
       begin
-        for var AStyle in AClassStyle.FAttributes.Keys do
+        AClasses.Add(s);
+        AClasses.Add('.'+s);
+      end;
+
+      for var AClass in AClasses do
+      begin
+        var AClassStyle := FDocument.Head.FCssStyles.GetStyle(AClass);
+        if AClassStyle <> nil then
         begin
-          AStyleStrings.Values[CssAttributeNameToString(AStyle)] :=
-            AClassStyle.FAttributes.Items[AStyle];
+          for var AStyle in AClassStyle.FAttributes.Keys do
+          begin
+            AStyleStrings.Values[CssAttributeNameToString(AStyle)] := AClassStyle.FAttributes.Items[AStyle];
+          end;
         end;
       end;
     end;
+
 
     for var AStyle in FStyles.Keys do
     begin
       if FStyles[AStyle] <> '' then
       begin
-        AStyleStrings.Values[CssAttributeNameToString(AStyle)] :=
-          FStyles.Items[AStyle];
+        AStyleStrings.Values[CssAttributeNameToString(AStyle)] := FStyles.Items[AStyle];
       end;
     end;
 
     if AStyleStrings.Count > 0 then
     begin
       Result := Result + ' style="';
-      for var ICount := 0 to AStyleStrings.Count - 1 do
+      for var ICount := 0 to AStyleStrings.Count-1 do
       begin
-        Result := Trim(Result + ' ' + AStyleStrings.Names[ICount] + ': ' +
-          AStyleStrings.ValueFromIndex[ICount] + ';');
+        Result := Trim(Result + ' '+AStyleStrings.Names[ICount]+': '+AStyleStrings.ValueFromIndex[ICount]+';');
       end;
       Result := Result + '" ';
     end;
@@ -689,106 +695,90 @@ end;
 
 function THtmlElement.HasClosingTag: Boolean;
 begin
-  Result := GetTag <> '';
+  Result := GetTag(htmlBrowser) <> '';
 end;
 
 procedure THtmlElement.LoadFromJson(AJson: TJsonObject);
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
-  FClass.CommaText := AJson.s['class'];
-  FAttributes.LoadFromJson(AJson.A['attributes']);
-  FStyles.LoadFromJson(AJson.A['_styles']);
-
-  FContent := AJson.s['content'];
+  {$IFDEF USE_JSONDATAOBJECTS}
+  FClass.CommaText := AJson.S['class'];
+  FAttributes.LoadFromJson(AJson.A['attributes']); 
+  FStyles.LoadFromJSon(AJson.A['_styles']);
+  
+  FContent := AJson.S['content'];
   FElements.LoadFromJson(AJson.A['elements']);
-{$ELSE}
-  if AJson.FindValue('class') <> nil then
-    FClass.CommaText := AJson.Values['class'].Value;
-  if AJson.FindValue('attributes') <> nil then
-    FAttributes.LoadFromJson(AJson.Values['attributes'].AsType<TJsonArray>);
-  if AJson.FindValue('_styles') <> nil then
-    FStyles.LoadFromJson(AJson.Values['_styles'].AsType<TJsonArray>);
-  if AJson.FindValue('content') <> nil then
-    FContent := AJson.Values['content'].Value;
-  if AJson.FindValue('elements') <> nil then
-    FElements.LoadFromJson(AJson.Values['elements'].AsType<TJsonArray>);
-{$ENDIF}
+  {$ELSE}
+  if AJson.FindValue('class') <> nil then FClass.CommaText := AJson.Values['class'].Value;
+  if AJson.FindValue('attributes') <> nil then FAttributes.LoadFromJson(AJson.Values['attributes'].AsType<TJSONArray>);
+  if AJson.FindValue('_styles') <> nil then FStyles.LoadFromJson(AJson.Values['_styles'].AsType<TJSONArray>);
+  if AJson.FindValue('content') <> nil then FContent := AJson.Values['content'].Value;
+  if AJson.FindValue('elements') <> nil then FElements.LoadFromJson(AJson.Values['elements'].AsType<TJSONArray>);
+  {$ENDIF}
 end;
 
 procedure THtmlElement.SaveToJson(AJson: TJsonObject);
 {$IFNDEF USE_JSONDATAOBJECTS}
 var
-  AArray: TJsonArray;
+  AArray: TJSONArray;
 {$ENDIF}
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
-  AJson.s['obj'] := ClassName;
-  if FClass.Count > 0 then
-    AJson.s['class'] := FClass.CommaText;
-  if FAttributes.Count > 0 then
-    FAttributes.SaveToJson(AJson.A['attributes']);
-  if FStyles.Count > 0 then
-    FStyles.SaveToJson(AJson.A['_styles']);
+  {$IFDEF USE_JSONDATAOBJECTS}
+  AJson.S['obj'] :=  ClassName;
+  if FClass.Count > 0 then AJson.S['class'] := FClass.CommaText;
+  if FAttributes.Count > 0 then FAttributes.SaveToJson(AJson.A['attributes']);
+  if FStyles.Count > 0 then FStyles.SaveToJson(AJson.A['_styles']);
+    
+  if FContent <> '' then AJson.S['content'] := FContent;
 
-  if FContent <> '' then
-    AJson.s['content'] := FContent;
-
+  
   if FElements.Count > 0 then
     FElements.SaveToJson(AJson.A['elements']);
-{$ELSE}
+  {$ELSE}
+
   AJson.AddPair('obj', ClassName);
-  if FClass.Count > 0 then
-    AJson.AddPair('class', FClass.CommaText);
-  if FContent <> '' then
-    AJson.AddPair('content', FContent);
+  if FClass.Count > 0 then AJson.AddPair('class', FClass.CommaText);
+  if FContent <> '' then AJson.AddPair('content', FContent);
 
   if FAttributes.Count > 0 then
   begin
-    AArray := TJsonArray.Create;
+    AArray := TJSONArray.Create;
     FAttributes.SaveToJson(AArray);
     AJson.AddPair('attributes', AArray);
   end;
 
   if FStyles.Count > 0 then
   begin
-    AArray := TJsonArray.Create;
+    AArray := TJSONArray.Create;
     FStyles.SaveToJson(AArray);
     AJson.AddPair('_styles', AArray);
   end;
 
   if FElements.Count > 0 then
   begin
-    AArray := TJsonArray.Create;
+    AArray := TJSONArray.Create;
     FElements.SaveToJson(AArray);
     AJson.AddPair('elements', AArray);
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
-procedure THtmlElement.SetAttribute(AAttribute: THtmlTagAttribute;
-  const Value: string);
+procedure THtmlElement.SetAttribute(AAttribute: THtmlTagAttribute; const Value: string);
 begin
   FAttributes.AddOrSetValue(AAttribute, Value);
 end;
 
 procedure THtmlElement.SetBorderAttributes(AColor, AWidth, AStyle: string);
 begin
-  if AColor <> '' then
-    Style[cssBorderColor] := AColor;
-  if AWidth <> '' then
-    Style[cssBorderWidth] := AWidth;
-  if AStyle <> '' then
-    Style[cssBorderStyle] := AStyle;
+  if AColor <> '' then Style[cssBorderColor] := AColor;
+  if AWidth <> '' then Style[cssBorderWidth] := AWidth;
+  if AStyle <> '' then Style[cssBorderStyle] := AStyle;
 end;
 
 procedure THtmlElement.SetFontAttributes(AFamily, AColor, ASize: string);
 begin
-  if AFamily <> '' then
-    Style[cssFontFamily] := AFamily;
-  if AColor <> '' then
-    Style[cssColor] := AColor;
-  if ASize <> '' then
-    Style[cssFontSize] := ASize;
+  if AFamily <> '' then Style[cssFontFamily] := AFamily;
+  if AColor <> '' then Style[cssColor] := AColor;
+  if ASize <> '' then Style[cssFontSize] := ASize;
 end;
 
 procedure THtmlElement.SetStyle(AStyle: THtmlCssAttribute; const Value: string);
@@ -810,12 +800,9 @@ begin
   inherited;
   FMetaData := TStringList.Create;
   FTitle := '';
-  FMetaData.Add
-    ('<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />');
-  FMetaData.Add
-    ('<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />');
-  FMetaData.Add
-    ('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>');
+  FMetaData.Add('<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />');
+  FMetaData.Add('<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />');
+  FMetaData.Add('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>');
 
   FCssStyles := TCssStyleList.Create([doOwnsValues]);
   FCssStyles.BuildDefaultStyles;
@@ -828,18 +815,18 @@ begin
   inherited;
 end;
 
-procedure THtmlHeadSection.GetInternalHtml(AStrings: TStrings);
+procedure THtmlHeadSection.GetInternalHtml(AStrings: TStrings; ATarget: THtmlRenderTarget);
 begin
   inherited;
-  AStrings.Add('<title>' + FTitle + '</title>');
+  AStrings.Add('<title>'+FTitle+'</title>');
   AStrings.AddStrings(FMetaData);
-  // if ATarget <> htmlEmail then
-  // begin
-  // FCssStyles.GetHtml(AStrings);
-  // end;
+  if ATarget <> htmlEmail then
+  begin
+    FCssStyles.GetHtml(AStrings);
+  end;
 end;
 
-function THtmlHeadSection.GetTag: string;
+function THtmlHeadSection.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'head';
 end;
@@ -851,30 +838,30 @@ var
 {$ENDIF}
 begin
   inherited;
-{$IFDEF USE_JSONDATAOBJECTS}
-  FTitle := AJson.s['title'];
-  FCssStyles.LoadFromJson(AJson.A['styles']);
-{$ELSE}
-  AArray := AJson.GetValue('styles').AsType<TJsonArray>;
+  {$IFDEF USE_JSONDATAOBJECTS}
+  FTitle := AJson.S['title'];
+  FCssStyles.loadFromJson(AJson.A['styles']);
+  {$ELSE}
+  AArray := AJson.GetValue('styles').AsType<TJSONArray>;
   FCssStyles.LoadFromJson(AArray);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure THtmlHeadSection.SaveToJson(AJson: TJsonObject);
 {$IFNDEF USE_JSONDATAOBJECTS}
 var
-  AArray: TJsonArray;
+  AArray: TJSONArray;
 {$ENDIF}
 begin
   inherited;
-{$IFDEF USE_JSONDATAOBJECTS}
-  AJson.s['title'] := FTitle;
+  {$IFDEF USE_JSONDATAOBJECTS}
+  AJson.S['title'] := FTitle;
   FCssStyles.SaveToJson(AJson.A['styles']);
-{$ELSE}
-  AArray := TJsonArray.Create;
+  {$ELSE}
+  AArray := TJSONArray.Create;
   FCssStyles.SaveToJson(AArray);
   AJson.AddPair('styles', AArray);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 { THtmlDocument }
@@ -882,98 +869,99 @@ end;
 procedure THtmlDocument.Clear;
 begin
   FHead.Clear;
-  FElements.Clear;
-  FReference := '';
-  FFooterImage.FImgSource := '';
-  FFooterImage.FTargetUrl := '';
+  FBody.Clear;
 end;
 
-constructor THtmlDocument.Create(AMaxWidth: integer);
+constructor THtmlDocument.Create;
+var
+  //AContainer: THtmlDivElement;
+  AContent: THtmlDivElement;
+  ABanner: THtmlImageElement;
 begin
 
   inherited Create;
-  FHead := THtmlHeadSection.Create(Self);
+  FHead := THtmlHeadSection.Create;
   FHead.FDocument := Self;
-  FMaxWidth := AMaxWidth;
   FHead.FParent := nil;
 
-  FElements := THtmlElementList.Create(nil, Self);
-  FBackgroundColor := '#eeeeee';
+  FBody := THtmlBodySection.Create;
+  FBody.FDocument := Self;
+  FBody.FParent := nil;
+  FBody.Style[cssMargin] := '0 auto';
+  //FBody.Style[cssWidth] := '100%';
+  FBody.Style[cssBorderCollapse] := 'collapse';
+  FBody.Style[cssBorderWidth] := '0px';
+
+  fBody.Attribute[attBgColor] := '#eaeaea';
+  fBody.Style[cssBackgroundColor] := '#eaeaea';
+
+  fBody.Style[cssMargin] := '12px';
+  fbody.Attribute[attAlign] := 'center';
+  fbody.Style[cssTextAlign] := 'center';
+
+  FContainer := FBody.Elements.AddDiv;
+  FContainer.Attribute[attId] := '_container';
+  FContainer.FClass.Add('container');
+  FContainer.Style[cssMargin] := '0px auto';
+  FContainer.SetBorderAttributes('#a6a6a6', '1px', 'solid');
+  FContainer.Style[cssBackgroundColor] := 'white';
+  FContainer.Style[cssMaxWidth] := '600px';
+  FContainer.Style[cssMinHeight] := '50px';
+  FContainer.Style[cssTextAlign] := 'center';
+  FContainer.Attribute[attAlign] := 'center';
+
+  ABanner := FContainer.Elements.AddImageFromUrl('');
+  ABanner.Style[cssWidth] := '100%';
+  ABanner.Attribute[attID] := '_headerBanner';
+
+  AContent := FContainer.Elements.AddDiv;
+  AContent.FClass.Add('content');
+  AContent.Attribute[attId] := '_content';
+  AContent.Style[cssTextAlign] := 'center';
+
+  AContent.Style[cssPadding] := '24px';
+  FBody.Elements.AddSpacer(20);
+
+  FBody.Elements.AddDiv.Attribute[attID] := '_footer';
+  Footer.Style[cssBorderWidth] := '0px';
 end;
 
 destructor THtmlDocument.Destroy;
 begin
   FHead.Free;
-  FElements.Free;
-  // FBody.Free;
-
+  FBody.Free;
   inherited;
 end;
 
-function THtmlDocument.GetAsHtml: string;
+
+function THtmlDocument.GetAsHtml(ATarget: THtmlRenderTarget): string;
 var
   AStrings: TStrings;
-  AElement: THtmlElement;
 begin
   AStrings := TStringList.Create;
   try
-    AStrings.Add
-      ('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">');
+    AStrings.Add('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">');
     AStrings.Add('<html xmlns="http://www.w3.org/1999/xhtml">');
-    FHead.GetHtml(AStrings);
+    FHead.GetHtml(AStrings, ATarget);
 
-    AStrings.Add('<body align="center" bgcolor="' + FBackgroundColor +'" style="background-color: ' + FBackgroundColor + '; ">');
-    AStrings.Add('<table style="' + FHead.FCssStyles.GetStyle('body')
-      .FAttributes.GetAsSingleLine +
-      ' padding: 10px; width:100%; background-color: ' + FBackgroundColor + '; '
-      + 'border: 1px solid ' + FBackgroundColor + '; ' +
-      'font-family: Tahoma, Geneva, sans-serif; font-size: 14px; line-height: 24px;">');
-    AStrings.Add('<tr><td>');
+    if ATarget = htmlEmail then AStrings.Add('<body style="margin: 0 auto; width: 100%; background-color: '+FBody.Style[cssBackgroundColor]+'">');
 
-    AStrings.Add
-      ('<table style="padding: 16px; text-align: center; border: 1px solid #cccccc; width: 100%; max-width: '+FMaxWidth.ToString+'px; margin: 0 auto; background-color: white; "');
-    // 'border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;">
-    // ');
-    AStrings.Add('<tr><td style="line-height: 24px;">');
+    FBody.GetHtml(AStrings, ATarget);
 
-    // elements
-    for AElement in FElements do
-    begin
-      AElement.GetHtml(AStrings);
-    end;
-
-    AStrings.Add('</td></tr>');
-    AStrings.Add('</table>');
-
-    AStrings.Add('</td></tr>');
-    AStrings.Add('</table>');
-
-    if FFooterImage.FImgSource <> '' then
-    begin
-      AStrings.Add('<a target="_blank" href="' + FFooterImage.FTargetUrl +
-        '"><img src="' + FFooterImage.FImgSource + '"/></a>');
-    end;
-
-    if FReference <> '' then
-      AStrings.Add
-        ('<br><br><p align="center" style="font-size: 9px; color:#aaaaaa;">Ref: '
-        + FReference + '</p><br>');
-
-    AStrings.Add('</body>');
+    if ATarget = htmlEmail then AStrings.Add('</body>');
 
     AStrings.Add('</html>');
-
     Result := AStrings.Text;
   finally
     AStrings.Free;
   end;
 end;
-
+        
 function THtmlDocument.GetAsJson: string;
 var
-  AJson: TJsonObject;
+  AJson: TJSONObject;
 begin
-  AJson := TJsonObject.Create;
+  AJson := TJSONObject.Create;
   try
     SaveToJson(AJson);
     Result := AJson.ToJSON;
@@ -982,55 +970,38 @@ begin
   end;
 end;
 
-function THtmlDocument.GetBackgroundColor: string;
+function THtmlDocument.GetContainer: THtmlDivElement;
 begin
-  Result := FBackgroundColor;
-end;
-
-function THtmlDocument.GetElements: THtmlElementList;
-begin
-  Result := FElements;
-end;
-
-{
-  function THtmlDocument.GetContainer: THtmlDivElement;
-  begin
   Result := FBody.Elements.ElementByID['_container'] as THtmlDivElement;
-  end;
+end;
 
-  function THtmlDocument.GetContent: THtmlDivElement;
-  begin
+function THtmlDocument.GetContent: THtmlDivElement;
+begin
   Result := GetContainer.Elements.ElementByID['_content'] as THtmlDivElement;
-  end; }{
+end;
 
-  function THtmlDocument.GetFooter: THtmlDivElement;
-  begin
+function THtmlDocument.GetFooter: THtmlDivElement;
+begin
   Result := FBody.Elements.ElementByID['_footer'] as THtmlDivElement;
-  end; }
+end;
 
 function THtmlDocument.GetHead: THtmlHeadSection;
 begin
   Result := FHead;
 end;
 
-function THtmlDocument.GetReference: string;
+function THtmlDocument.GetHeaderBanner: THtmlImageElement;
 begin
-  Result := FReference;
-end;
-
-{
-  function THtmlDocument.GetHeaderBanner: THtmlImageElement;
-  begin
   Result := GetContainer.Elements.GetElementByID('_headerBanner') as THtmlImageElement;
-  end;
-}
-procedure THtmlDocument.SaveHtmlToFile(AFilename: string);
+end;         
+
+procedure THtmlDocument.SaveHtmlToFile(AFilename: string; const AFormat: THtmlRenderTarget = htmlBrowser);
 var
   AStrings: TStrings;
 begin
   AStrings := TStringList.Create;
   try
-    AStrings.Text := GetAsHtml;
+    AStrings.Text := GetAsHtml(AFormat);
     AStrings.SaveToFile(AFilename);
   finally
     AStrings.Free;
@@ -1040,32 +1011,31 @@ end;
 procedure THtmlDocument.SaveToJson(AJson: TJsonObject);
 {$IFNDEF USE_JSONDATAOBJECTS}
 var
-  AHead, ABody: TJsonObject;
+  AHead, ABody: TJSONObject;
 {$ENDIF}
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
-  AJson.s['reference'] := FReference;
+  {$IFDEF USE_JSONDATAOBJECTS}
   FHead.SaveToJson(AJson.O['head']);
-  FElements.SaveToJson(AJson.A['elements']);
-{$ELSE}
-  AHead := TJsonObject.Create;
+  FBody.SaveToJson(AJson.O['body']);
+  {$ELSE}
+  AHead := TJSONObject.Create;
   FHead.SaveToJson(AHead);
   AJson.AddPair('head', AHead);
-
-  // ABody := TJSONObject.Create;
-  FElements.SaveToJson(AJson.A['elements']);
-{$ENDIF}
+  ABody := TJSONObject.Create;
+  FBody.SaveToJson(ABody);
+  AJson.AddPair('body', ABody);
+  {$ENDIF}
 end;
 
 procedure THtmlDocument.SetAsJson(const Value: string);
 var
   AJson: TJsonObject;
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
-  AJson := TJsonObject.Parse(Value) as TJsonObject;
-{$ELSE}
-  AJson := TJsonObject.ParseJSONValue(Value) as TJsonObject;
-{$ENDIF}
+  {$IFDEF USE_JSONDATAOBJECTS}
+  AJson := TJSONObject.Parse(Value) as TJSONObject;
+  {$ELSE}
+  AJson := TJsonObject.ParseJSONValue(Value) as TJSONObject;
+  {$ENDIF}
   try
     LoadFromJson(AJson);
   finally
@@ -1073,66 +1043,49 @@ begin
   end;
 end;
 
-procedure THtmlDocument.SetBackgroundColor(const Value: string);
-begin
-  FBackgroundColor := Value;
-end;
-
-procedure THtmlDocument.SetFooterImage(AImg, AUrl: string);
-begin
-  FFooterImage.FImgSource := AImg;
-  FFooterImage.FTargetUrl := AUrl;
-end;
-
-procedure THtmlDocument.SetReference(const Value: string);
-begin
-  FReference := Value;
-end;
-
 procedure THtmlDocument.LoadFromJson(AJson: TJsonObject);
 begin
   Clear;
-{$IFDEF USE_JSONDATAOBJECTS}
+  {$IFDEF USE_JSONDATAOBJECTS}
   FHead.LoadFromJson(AJson.O['head']);
-  FElements.LoadFromJson(AJson.A['elements']);
-  FReference := AJson.s['reference'];
+  FBody.LoadFromJson(AJson.O['body']);
+  {$ELSE}
+  FHead.LoadFromJson(AJson.GetValue('head') as TJSONObject);
+  FBody.LoadFromJson(AJson.GetValue('body') as TJSONObject);
+  {$ENDIF}
+end;
 
-{$ELSE}
-  FHead.LoadFromJson(AJson.GetValue('head') as TJsonObject);
-{$ENDIF}
+{ THtmlBodySection }
+
+function THtmlBodySection.GetTag(ATarget: THtmlRenderTarget): string;
+begin
+  case ATarget of
+    htmlEmail: Result := 'table';
+    htmlBrowser: Result := 'body';
+  end;
+
 end;
 
 { THtmlElementList }
 
 function THtmlElementList.CreateClass(AClass: THtmlElementClass): THtmlElement;
 begin
-  Result := AClass.Create(FDocument);
-  Result.FDocument := FDocument;
+  Result := AClass.Create;
+  Result.FDocument := FOwner.FDocument;
   Result.FParent := FOwner;
 end;
 
-function THtmlElementList.AddButton(AText, AUrl: string;
-  AStyle: THtmlButtonStyle): THtmlButtonElement;
-var
-  AFontColor: string;
+function THtmlElementList.AddButton(AText, AUrl: string; AStyle: THtmlButtonStyle): THtmlButtonElement;
 begin
   Result := CreateClass(THtmlButtonElement) as THtmlButtonElement;
+  Result.Attribute[attHref] := AUrl;
   Result.CssClass.Add('btn');
   Result.CssClass.Add(ButtonStyleToString(AStyle));
-  Result.Style[cssLineHeight] := '14px';
-  // Result.Style[cssDisplay] := 'block';
-  // Result.Style[cssMarginTop] := '8px';
-  // Result.Style[cssMarginBottom] := '8px';
-  Result.Style[cssPadding] := '8px';
-  Result.Style[cssMaxHeight] := '32px';
-  Result.Style[cssMaxWidth] := '200px';
-  Result.FUrl := AUrl;
-  AFontColor := '#fff';
-  Result.Content := '<a href="' + AUrl +
-    '" style="text-decoration: none; color: ' + AFontColor + ';">' +
-    AText + '</a>';
+  Result.Style[cssDisplay] := 'block';
+  Result.Style[cssMarginTop] := '8px';
+  Result.Style[cssMarginBottom] := '8px';
+  Result.Text := AText;
   Add(Result);
-
 end;
 
 function THtmlElementList.AddDiv: THtmlDivElement;
@@ -1141,8 +1094,7 @@ begin
   Add(Result);
 end;
 
-function THtmlElementList.AddHeader(AType: THtmlHeaderType; AText: string)
-  : THtmlHeaderElement;
+function THtmlElementList.AddHeader(AType: THtmlHeaderType; AText: string): THtmlHeaderElement;
 begin
   Result := CreateClass(THtmlHeaderElement) as THtmlHeaderElement;
   Result.HeaderType := AType;
@@ -1166,8 +1118,7 @@ begin
   Add(Result);
 end;
 
-function THtmlElementList.AddAlert(AText: string; AAlertStyle: THtmlAlertStyle)
-  : THtmlAlertElement;
+function THtmlElementList.AddAlert(AText: string; AAlertStyle: THtmlAlertStyle): THtmlAlertElement;
 begin
   Result := CreateClass(THtmlAlertElement) as THtmlAlertElement;
   Result.Style := AAlertStyle;
@@ -1191,7 +1142,7 @@ begin
   AEncoded := TStringStream.Create;
   try
     TNetEncoding.Base64.Encode(AStream, AEncoded);
-    Result.Attribute[attSrc] := 'data:image/png;base64, ' + AEncoded.DataString;
+    Result.Attribute[attSrc] := 'data:image/png;base64, '+AEncoded.DataString;
   finally
     AEncoded.Free;
   end;
@@ -1214,11 +1165,9 @@ begin
   Add(Result);
 end;
 
-function THtmlElementList.AddSocialIcons(ADetails: THtmlSocialUrls)
-  : THtmlSocialIcons;
+function THtmlElementList.AddSocialIcons(ADetails: THtmlSocialUrls): THtmlSocialIcons;
 begin
-  Result := CreateClass(THtmlSocialIcons) as THtmlSocialIcons;
-  Result.Style[cssTextAlign] := 'center';
+  Result := CreateClass(THTmlSocialIcons) as THtmlSocialICons;
   Result.SocialUrls := ADetails;
   Add(Result);
 end;
@@ -1226,7 +1175,7 @@ end;
 function THtmlElementList.AddSpacer(AHeight: integer): THtmlSpacerElement;
 begin
   Result := CreateClass(THtmlSpacerElement) as THtmlSpacerElement;
-  Result.Style[cssHeight] := AHeight.ToString + 'px';
+  Result.Style[cssHeight] := AHeight.ToString+'px';
   Add(Result);
 end;
 
@@ -1253,8 +1202,7 @@ begin
   end;
 end;
 
-function THtmlElementList.AddImageFromUrl(ASrc: string;
-  const AInline: Boolean = False): THtmlImageElement;
+function THtmlElementList.AddImageFromUrl(ASrc: string; const AInline: Boolean = False): THtmlImageElement;
 var
   AHttp: THTTPClient;
   AStream: TStream;
@@ -1280,8 +1228,7 @@ begin
   end;
 end;
 
-function THtmlElementList.AddImageFromFile(AFilename: string)
-  : THtmlImageElement;
+function THtmlElementList.AddImageFromFile(AFilename: string): THtmlImageElement;
 var
   AImg: TPicture;
 begin
@@ -1294,12 +1241,10 @@ begin
   end;
 end;
 
-constructor THtmlElementList.Create(AOwner: THtmlElement;
-  ADocument: IHtmlDocument);
+constructor THtmlElementList.Create(AOwner: THtmlElement);
 begin
   inherited Create(True);
   FOwner := AOwner;
-  FDocument := ADocument;
 end;
 
 function THtmlElementList.CreateElement(AObj: string): THtmlElement;
@@ -1319,10 +1264,10 @@ begin
       AElement.Free;
     end;
   end
-{$IFDEF DEBUG}
+  {$IFDEF DEBUG}
   else
-    raise Exception.Create('Class not registered: ' + AObj);
-{$ENDIF}
+    raise Exception.Create('Class not registered: '+AObj);
+  {$ENDIF}
 end;
 
 function THtmlElementList.GetElementByID(AID: string): THtmlElement;
@@ -1342,17 +1287,17 @@ end;
 
 procedure THtmlElementList.LoadFromJson(AJson: TJsonArray);
 var
-{$IFNDEF USE_JSONDATAOBJECTS}
+  {$IFNDEF USE_JSONDATAOBJECTS}
   AValue: TJSONValue;
-{$ELSE}
+  {$ELSE}
   AObj: TJsonObject;
-{$ENDIF}
+  {$ENDIF}
   AElement: THtmlElement;
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
+  {$IFDEF USE_JSONDATAOBJECTS}
   for AObj in AJson do
   begin
-    AElement := CreateElement(AObj.s['obj']);
+    AElement := CreateElement(AObj.S['obj']);
     if AElement <> nil then
     begin
       AElement.FParent := FOwner;
@@ -1360,19 +1305,19 @@ begin
       Add(AElement);
     end;
   end;
-{$ELSE}
+  {$ELSE}
   for AValue in AJson do
   begin
-    AElement := CreateElement(AValue.AsType<TJsonObject>.Values['obj'].Value);
+    AElement := CreateElement(AValue.AsType<TJsonOBject>.Values['obj'].Value);
     if AElement <> nil then
     begin
       AElement.FParent := FOwner;
-      AElement.LoadFromJson(AValue.AsType<TJsonObject>);
+      AElement.LoadFromJson(AValue.AsType<TJSONObject>);
       Add(AElement);
     end;
   end;
 
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure THtmlElementList.SaveToJson(AJson: TJsonArray);
@@ -1390,7 +1335,7 @@ end;
 
 { THtmlHeaderElement }
 
-function THtmlHeaderElement.GetTag: string;
+function THtmlHeaderElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := TRttiEnumerationType.GetName(FHeaderType);
 end;
@@ -1409,15 +1354,14 @@ end;
 
 { THtmlHrElement }
 
-procedure THtmlHrElement.GetHtml(AHtml: TStrings);
+procedure THtmlHrElement.GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
 begin
-  // inherited;
-  AHtml.Add(
-    '<div style="background: #d9d9d9; font-size: 1px; line-height: 1px;">&nbsp;</div>');
+  //inherited;
+  AHtml.Add('<div style="background: #d9d9d9; font-size: 1px; line-height: 1px;">&nbsp;</div>');
 
 end;
 
-function THtmlHrElement.GetTag: string;
+function THtmlHrElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'hr';
 end;
@@ -1436,7 +1380,7 @@ begin
 
 end;
 
-procedure THtmlImageElement.GetHtml(AHtml: TStrings);
+procedure THtmlImageElement.GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
 begin
   if Src = '' then
     Style[cssDisplay] := 'none';
@@ -1448,7 +1392,7 @@ begin
   Result := Attribute[THtmlTagAttribute.attSrc];
 end;
 
-function THtmlImageElement.GetTag: string;
+function THtmlImageElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'img';
 end;
@@ -1465,7 +1409,7 @@ end;
 
 { THtmlBrElement }
 
-function THtmlBrElement.GetTag: string;
+function THtmlBrElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'br';
 end;
@@ -1508,70 +1452,61 @@ end;
 procedure THtmlCssStyle.LoadFromJson(AJson: TJsonObject);
 {$IFNDEF USE_JSONDATAOBJECTS}
 var
-  AArray: TJsonArray;
+  AArray: TJSONArray;
 {$ENDIF}
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
-  FAttributes.LoadFromJson(AJson.A['attributes']);
-{$ELSE}
-  if AJson.FindValue('attributes') <> nil then
+  {$IFDEF USE_JSONDATAOBJECTS}  
+  FAttributes.LoadFromJSon(AJson.A['attributes']);
+  {$ELSE}
+  if AJson.FindValue('attributes') <> nil then 
   begin
-    AArray := AJson.GetValue('attributes').AsType<TJsonArray>;
+    AArray := AJson.GetValue('attributes').AsType<TJSONArray>;
     FAttributes.LoadFromJson(AArray);
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure THtmlCssStyle.SaveToJson(AJson: TJsonObject);
 {$IFNDEF USE_JSONDATAOBJECTS}
 var
-  AArray: TJsonArray;
+  AArray: TJSONArray;
 {$ENDIF}
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
+  {$IFDEF USE_JSONDATAOBJECTS}
   FAttributes.SaveToJson(AJson.A['attributes']);
-{$ELSE}
-  AArray := TJsonArray.Create;
+  {$ELSE}
+  AArray := TJSONArray.Create;
 
   FAttributes.SaveToJson(AArray);
   AJson.AddPair('attributes', AArray);
 
-{$ENDIF}
+  {$ENDIF}
 end;
 
-procedure THtmlCssStyle.SetAttribute(AName: THtmlCssAttribute;
-  const Value: string);
+procedure THtmlCssStyle.SetAttribute(AName: THtmlCssAttribute; const Value: string);
 begin
-  FAttributes.AddOrSetValue(AName, StringReplace(Value, ';', '',
-    [rfReplaceAll]));
+  FAttributes.AddOrSetValue(AName, StringReplace(Value, ';', '', [rfReplaceAll]));
 end;
 
 procedure THtmlCssStyle.SetFontAttributes(AFamily, AColor, ASize: string);
 begin
-  if AFamily <> '' then
-    Attribute[cssFontFamily] := AFamily;
-  if AColor <> '' then
-    Attribute[cssColor] := AColor;
-  if ASize <> '' then
-    Attribute[cssFontSize] := ASize;
+  if AFamily <> '' then Attribute[cssFontFamily] := AFamily;
+  if AColor <> '' then Attribute[cssColor] := AColor;
+  if ASize <> '' then Attribute[cssFontSize] := ASize;
 end;
 
 procedure THtmlCssStyle.SetBorderAttributes(AColor, AWidth, AStyle: string);
 begin
-  if AColor <> '' then
-    Attribute[cssBorderColor] := AColor;
-  if AWidth <> '' then
-    Attribute[cssBorderWidth] := AWidth;
-  if AStyle <> '' then
-    Attribute[cssBorderStyle] := AStyle;
+  if AColor <> '' then Attribute[cssBorderColor] := AColor;
+  if AWidth <> '' then Attribute[cssBorderWidth] := AWidth;
+  if AStyle <> '' then Attribute[cssBorderStyle] := AStyle;
 end;
 
 { TCssStyleList }
 
 procedure TCssStyleList.BuildDefaultStyles;
 
-  procedure AddAlertStyle(AStyle: THtmlCssStyle; AFontColor, ABackgroundColor,
-    ABorderColor: string);
+  procedure AddAlertStyle(AStyle: THtmlCssStyle; AFontColor, ABackgroundColor, ABorderColor: string);
   begin
     AStyle.Attribute[cssColor] := AFontColor;
     AStyle.Attribute[cssBackgroundColor] := ABackgroundColor;
@@ -1584,9 +1519,9 @@ begin
   Style['body'].Attribute[cssTextAlign] := 'center';
   Style['body'].SetFontAttributes('Tahoma, Geneva, sans-serif', '#333333', '');
 
-  // Style['p'].Attribute[cssLineHeight] := '1.5';
+  Style['p'].Attribute[cssLineHeight] := '1.5';
 
-  // Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
+  Style['p'].Attribute[cssFontFamily] := 'Tahoma, Geneva, sans-serif';
 
   AStyle := Style['.btn'];
   AStyle.Attribute[cssColor] := 'white';
@@ -1599,35 +1534,27 @@ begin
   AStyle.Attribute[cssTextDecoration] := 'none';
   AStyle.Attribute[cssCursor] := 'pointer';
 
-  Style['.' + ButtonStyleToString(btnPrimary)].Attribute[cssBackground] :=
-    '#0d6efd';
-  Style['.' + ButtonStyleToString(btnSecondary)].Attribute[cssBackground] :=
-    '#6C757D';
-  Style['.' + ButtonStyleToString(btnSuccess)].Attribute[cssBackground] :=
-    '#198754';
-  Style['.' + ButtonStyleToString(btnDanger)].Attribute[cssBackground] :=
-    '#DC3545';
 
-  Style['.' + ButtonStyleToString(btnWarning)].Attribute[cssBackground] :=
-    '#FFC107';
-  Style['.' + ButtonStyleToString(btnWarning)].Attribute[cssColor] := '#212529';
+  Style['.'+ButtonStyleToString(btnPrimary)].Attribute[cssBackground] := '#0d6efd';
+  Style['.'+ButtonStyleToString(btnSecondary)].Attribute[cssBackground] := '#6C757D';
+  Style['.'+ButtonStyleToString(btnSuccess)].Attribute[cssBackground] := '#198754';
+  Style['.'+ButtonStyleToString(btnDanger)].Attribute[cssBackground] := '#DC3545';
 
-  Style['.' + ButtonStyleToString(btnInfo)].Attribute[cssBackground] :=
-    '#0DCAF0';
-  Style['.' + ButtonStyleToString(btnInfo)].Attribute[cssColor] := '#fff';
+  Style['.'+ButtonStyleToString(btnWarning)].Attribute[cssBackground] := '#FFC107';
+  Style['.'+ButtonStyleToString(btnWarning)].Attribute[cssColor] := '#212529';
 
-  Style['.' + ButtonStyleToString(btnLight)].Attribute[cssBackground] :=
-    '#F8F9FA';
-  Style['.' + ButtonStyleToString(btnLight)].Attribute[cssColor] := '#000';
+  Style['.'+ButtonStyleToString(btnInfo)].Attribute[cssBackground] := '#0DCAF0';
+  Style['.'+ButtonStyleToString(btnInfo)].Attribute[cssColor] := '#fff';
 
-  Style['.' + ButtonStyleToString(btnDark)].Attribute[cssBackground] :=
-    '#343A40';
-  Style['.' + ButtonStyleToString(btnDark)].Attribute[cssColor] := '#000';
+  Style['.'+ButtonStyleToString(btnLight)].Attribute[cssBackground] := '#F8F9FA';
+  Style['.'+ButtonStyleToString(btnLight)].Attribute[cssColor] := '#000';
 
-  Style['.' + ButtonStyleToString(btnLink)].Attribute[cssBackground] := 'none';
-  Style['.' + ButtonStyleToString(btnLink)].Attribute[cssColor] := '#0d6efd';
-  Style['.' + ButtonStyleToString(btnLink)].Attribute[cssTextDecoration] :=
-    'underline';
+  Style['.'+ButtonStyleToString(btnDark)].Attribute[cssBackground] := '#343A40';
+  Style['.'+ButtonStyleToString(btnDark)].Attribute[cssColor] := '#000';
+
+  Style['.'+ButtonStyleToString(btnLink)].Attribute[cssBackground] := 'none';
+  Style['.'+ButtonStyleToString(btnLink)].Attribute[cssColor] := '#0d6efd';
+  Style['.'+ButtonStyleToString(btnLink)].Attribute[cssTextDecoration] := 'underline';
 
   AStyle := Style['.alert'];
   AStyle.Attribute[cssPadding] := '10px';
@@ -1642,6 +1569,7 @@ begin
 
 end;
 
+
 procedure TCssStyleList.GetHtml(AStrings: TStrings);
 var
   AName: string;
@@ -1655,14 +1583,15 @@ begin
     begin
       if TryGetValue(AName, AStyle) then
       begin
-        ACssStrings.Add(AName + ' {' +
-          AStyle.FAttributes.GetAsSingleLine + '}');
+        ACssStrings.Add(AName+' {'+AStyle.FAttributes.GetAsSingleLine+'}');
       end;
     end;
     TStringList(ACssStrings).Sort;
     AStrings.AddStrings(ACssStrings);
-    // AStrings.Add('.ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td {line-height: 100%;}');
-    // AStrings.Add('.ExternalClass {width: 100%;}');
+    AStrings.Add('.ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td {line-height: 100%;}');
+    AStrings.Add('.ExternalClass {width: 100%;}');
+
+
 
     AStrings.Add('</style>');
   finally
@@ -1684,29 +1613,29 @@ procedure TCssStyleList.LoadFromJson(AJson: TJsonArray);
 var
   AObj: TJsonObject;
   ACss: THtmlCssStyle;
-{$IFNDEF USE_JSONDATAOBJECTS}
+  {$IFNDEF USE_JSONDATAOBJECTS}
   AValue: TJSONValue;
-{$ENDIF}
+  {$ENDIF}
   AName: string;
 begin
-{$IFDEF USE_JSONDATAOBJECTS}
+  {$IFDEF USE_JSONDATAOBJECTS}
   for AObj in AJson do
   begin
     ACss := THtmlCssStyle.Create;
-    AName := AObj.s['name'];
+    AName := AObj.S['name'];    
     ACss.LoadFromJson(AObj);
     AddOrSetValue(AName, ACss);
   end;
-{$ELSE}
+  {$ELSE}
   for AValue in AJson do
   begin
-    AObj := AValue as TJsonObject;
+    AObj := AValue as TJSONObject;
     ACss := THtmlCssStyle.Create;
-    AName := AObj.Values['name'].Value;
+    AName := AObj.Values['name'].Value;    
     ACss.LoadFromJson(AObj);
     AddOrSetValue(AName, ACss);
-  end;
-{$ENDIF}
+  end;  
+  {$ENDIF}
 end;
 
 procedure TCssStyleList.SaveToJson(AJson: TJsonArray);
@@ -1720,11 +1649,11 @@ begin
     if TryGetValue(AKey, AStyle) then
     begin
       AObj := TJsonObject.Create;
-{$IFDEF USE_JSONDATAOBJECTS}
-      AObj.s['name'] := AKey;
-{$ELSE}
+      {$IFDEF USE_JSONDATAOBJECTS}
+      AObj.S['name'] := AKey;
+      {$ELSE}
       AObj.AddPair('name', AKey);
-{$ENDIF}
+      {$ENDIF}
       AStyle.SaveToJson(AObj);
       AJson.Add(AObj);
     end;
@@ -1732,8 +1661,7 @@ begin
 
 end;
 
-procedure TCssStyleList.SetAllHeaders(AAttribute: THtmlCssAttribute;
-  AValue: string);
+procedure TCssStyleList.SetAllHeaders(AAttribute: THtmlCssAttribute; AValue: string);
 var
   h: THtmlHeaderType;
 begin
@@ -1755,11 +1683,11 @@ begin
   begin
     if TryGetValue(AAttribute, AValue) then
     begin
-      Result := Result + CssAttributeNameToString(AAttribute) + ': ' +
-        AValue + '; ';
+      Result := Result + CssAttributeNameToString(AAttribute)+': '+AValue+'; ';
     end;
   end;
 end;
+
 
 procedure BuildCssAttributeMap(AMap: THtmlCssAttributeMap);
 var
@@ -1804,36 +1732,34 @@ begin
   for AAtt := Low(THtmlCssAttribute) to High(THtmlCssAttribute) do
   begin
     if not AMap.ContainsKey(AAtt) then
-      raise Exception.Create('THtmlCssAttribute map missing: ' +
-        TRttiEnumerationType.GetName(AAtt));
+      raise Exception.Create('THtmlCssAttribute map missing: '+ TRttiEnumerationType.GetName(AAtt));
   end;
 end;
 
 procedure TCssAttributeList.LoadFromJson(AJson: TJsonArray);
 var
-{$IFDEF USE_JSONDATAOBJECTS}
+  {$IFDEF USE_JSONDATAOBJECTS}
   AStr: string;
-{$ELSE}
+  {$ELSE}
   AValue: TJSONValue;
-{$ENDIF}
+  {$ENDIF}
   AStrings: TStrings;
   ICount: integer;
-
+  
 begin
   Clear;
   AStrings := TStringList.Create;
   try
-{$IFDEF USE_JSONDATAOBJECTS}
+    {$IFDEF USE_JSONDATAOBJECTS}
     for AStr in AJson do
       AStrings.Add(AStr);
-{$ELSE}
+    {$ELSE}
     for AValue in AJson do
       AStrings.Add(AValue.Value);
-
-{$ENDIF}
-    for ICount := 0 to AStrings.Count - 1 do
-      AddOrSetValue(CssAttributeNameFromString(AStrings.Names[ICount]),
-        AStrings.ValueFromIndex[ICount]);
+    
+    {$ENDIF}
+    for ICount := 0 to AStrings.Count-1 do
+      AddOrSetValue(CssAttributeNameFromString(AStrings.Names[ICount]), AStrings.ValueFromIndex[ICount]);
   finally
     AStrings.Free;
   end;
@@ -1848,28 +1774,28 @@ begin
   begin
     if TryGetValue(AKey, AValue) then
     begin
-      AJson.Add(CssAttributeNameToString(AKey) + '=' + AValue);
+      AJson.Add(CssAttributeNameToString(AKey)+'='+AValue);
     end;
   end;
 end;
 
 { THtmlParagraphElement }
 
-function THtmlParagraphElement.GetTag: string;
+function THtmlParagraphElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'p';
 end;
 
 { THtmlLinkElement }
 
-function THtmlLinkElement.GetTag: string;
+function THtmlLinkElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'a';
 end;
 
 { THtmlAlertElement }
 
-function THtmlAlertElement.GetTag: string;
+function THtmlAlertElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := 'div';
 end;
@@ -1878,27 +1804,26 @@ end;
 
 procedure THtmlAttributeList.LoadFromJson(AArray: TJsonArray);
 var
-{$IFDEF USE_JSONDATAOBJECTS}
+  {$IFDEF USE_JSONDATAOBJECTS}
   AStr: string;
-{$ELSE}
+  {$ELSE}
   AValue: TJSONValue;
-{$ENDIF}
+  {$ENDIF}
   AStrings: TStrings;
   ICount: integer;
 begin
   Clear;
   AStrings := TStringList.Create;
   try
-{$IFDEF USE_JSONDATAOBJECTS}
+    {$IFDEF USE_JSONDATAOBJECTS}
     for AStr in AArray do
       AStrings.Add(AStr);
-{$ELSE}
+    {$ELSE}
     for AValue in AArray do
       AStrings.Add(AValue.Value);
-{$ENDIF}
-    for ICount := 0 to AStrings.Count - 1 do
-      AddOrSetValue(HtmlTagStringToAttribute(AStrings.Names[ICount]),
-        AStrings.ValueFromIndex[ICount]);
+    {$ENDIF}
+    for ICount := 0 to AStrings.Count-1 do
+      AddOrSetValue(HtmlTagStringToAttribute(AStrings.Names[ICount]), AStrings.ValueFromIndex[ICount]);
   finally
     AStrings.Free;
   end;
@@ -1912,13 +1837,13 @@ begin
   for AAtt in Self.Keys do
   begin
     if TryGetValue(AAtt, AValue) then
-      AArray.Add(HtmlTagAttributeToString(AAtt) + '=' + AValue);
+      AArray.Add(HtmlTagAttributeToString(AAtt)+'='+AValue);
   end;
 end;
 
 { THmtlSocialIcons }
 
-procedure THtmlSocialIcons.GetInternalHtml(AHtml: TStrings);
+procedure THtmlSocialIcons.GetInternalHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
 
   function GetSvg(AName: string): string;
   var
@@ -1939,37 +1864,21 @@ procedure THtmlSocialIcons.GetInternalHtml(AHtml: TStrings);
 
 begin
   inherited;
-  if FSocialUrls.FTwitterUrl <> '' then
-    AHtml.Add('<a href="' + FSocialUrls.FTwitterUrl +
-      '"><img alt="twitter" border="0" width="32" height="32" src="' +
-      C_TWITTER_ICON_URL + '"/></a>');
-  if FSocialUrls.FInstagramUrl <> '' then
-    AHtml.Add('<a href="' + FSocialUrls.FInstagramUrl +
-      '"><img alt="instagram" border="0" width="32" height="32" src="' +
-      C_INSTAGRAM_ICON_URL + '"/></a>');
-  if FSocialUrls.FFacebookUrl <> '' then
-    AHtml.Add('<a href="' + FSocialUrls.FFacebookUrl +
-      '"><img alt="facebook" border="0" width="32" height="32" src="' +
-      C_FACEBOOK_ICON_URL + '"/></a>');
+  if FSocialUrls.FTwitterUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FTwitterUrl+'"><img border="0" width="24" height="24" src="'+C_TWITTER_ICON_URL+'"/></a>');
+  if FSocialUrls.FInstagramUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FInstagramUrl+'"><img border="0" width="24" height="24" src="'+C_INSTAGRAM_ICON_URL+'"/></a>');
+  if FSocialUrls.FFacebookUrl <> '' then AHTml.Add('<a href="'+FSocialUrls.FFacebookUrl+'"><img border="0" width="24" height="24" src="'+C_FACEBOOK_ICON_URL+'"/></a>');
 end;
 
 { THtmlRawElement }
 
-function THtmlRawElement.GetTag: string;
+function THtmlRawElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   Result := '';
 end;
 
 { THtmlButtonElement }
 
-procedure THtmlButtonElement.GetHtml(AHtml: TStrings);
-begin
-  AHtml.Add('<a href="' + FUrl + '" style="text-decoration: none;">');
-  inherited GetHtml(AHtml);
-  AHtml.Add('</a>');
-end;
-
-function THtmlButtonElement.GetTag: string;
+function THtmlButtonElement.GetTag(ATarget: THtmlRenderTarget): string;
 begin
   if Attribute[attType].ToLower = 'submit' then
     Result := 'button'
@@ -1977,49 +1886,37 @@ begin
     Result := 'a';
 end;
 
-procedure THtmlButtonElement.LoadFromJson(AJson: TJsonObject);
-begin
-  inherited;
-  FUrl := AJson.s['url'];
-end;
-
-procedure THtmlButtonElement.SaveToJson(AJson: TJsonObject);
-begin
-  inherited;
-  AJson.s['url'] := FUrl;
-end;
-
 { THtmlSpacerElement }
 
-procedure THtmlSpacerElement.GetHtml(AHtml: TStrings);
+procedure THtmlSpacerElement.GetHtml(AHtml: TStrings; ATarget: THtmlRenderTarget);
 begin
-  // inherited;
-  AHtml.Add(
-    '<table style="margin: 0;padding: 0;border-spacing: 0;overflow: hidden;" cellspacing="0" cellpadding="0" border="0" width="100%">'
-    + '<tbody style="margin: 0;padding: 0;">' +
-    '    <tr style="font-family: Helvetica, sans-serif;font-size: 100%;margin: 0;padding: 0;">'
-    + '        <td style="font-size: 0;margin: 0;padding: 0;height: ' +
-    Style[cssHeight] + '; "></td>' + '    </tr>' + '</table>');
+  //inherited;
+  AHtml.Add('<table style="margin: 0;padding: 0;border-spacing: 0;overflow: hidden;" cellspacing="0" cellpadding="0" border="0" width="100%">'+
+    '<tbody style="margin: 0;padding: 0;">'+
+    '    <tr style="font-family: Helvetica, sans-serif;font-size: 100%;margin: 0;padding: 0;">'+
+    '        <td style="font-size: 0;margin: 0;padding: 0;height: '+Style[cssHeight]+'; "></td>'+
+    '    </tr>'+
+    '</table>');
 end;
 
 initialization
 
-InternalHtmlCssAttributeMap := THtmlCssAttributeMap.Create;
-BuildCssAttributeMap(InternalHtmlCssAttributeMap);
+  InternalHtmlCssAttributeMap := THtmlCssAttributeMap.Create;
+  BuildCssAttributeMap(InternalHtmlCssAttributeMap);
 
-RegisterClass(THtmlDivElement);
-RegisterClass(THtmlRawElement);
-RegisterClass(THtmlHeaderElement);
-RegisterClass(THtmlHrElement);
-RegisterClass(THtmlBrElement);
-RegisterClass(THtmlImageElement);
-RegisterClass(THtmlParagraphElement);
-RegisterClass(THtmlAlertElement);
-RegisterClass(THtmlButtonElement);
-RegisterClass(THtmlLinkElement);
+  RegisterClass(THtmlDivElement);
+  RegisterClass(THtmlRawElement);
+  RegisterClass(THtmlHeaderElement);
+  RegisterClass(THtmlHrElement);
+  RegisterClass(THtmlBrElement);
+  RegisterClass(THtmlImageElement);
+  RegisterClass(THtmlParagraphElement);
+  RegisterClass(THtmlAlertElement);
+  RegisterClass(THtmlButtonElement);
+  RegisterClass(THtmlLinkElement);
 
 finalization
 
-InternalHtmlCssAttributeMap.Free;
+  InternalHtmlCssAttributeMap.Free;
 
 end.

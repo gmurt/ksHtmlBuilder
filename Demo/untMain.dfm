@@ -129,6 +129,7 @@ object Form22: TForm22
         'Bootstrap Style Buttons'
         'Cancel Booking'
         'Payment Failed'
+        'Text Justify'
         'Voucher')
       Sorted = True
       TabOrder = 0
