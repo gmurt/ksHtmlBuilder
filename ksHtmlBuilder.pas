@@ -951,12 +951,12 @@ begin
     if FFooterImage.FImgSource <> '' then
     begin
       AStrings.Add('<a target="_blank" href="' + FFooterImage.FTargetUrl +
-        '"><img src="' + FFooterImage.FImgSource + '"/></a>');
+        '"><img alt="footer image" src="' + FFooterImage.FImgSource + '"/></a>');
     end;
 
     if FReference <> '' then
       AStrings.Add
-        ('<br><br><p align="center" style="font-size: 9px; color:#aaaaaa;">Ref: '
+        ('<br><br><p align="center" style="font-size: 9px; color:#000000;">Ref: '
         + FReference + '</p><br>');
 
     AStrings.Add('</body>');
@@ -1082,6 +1082,7 @@ procedure THtmlDocument.SetFooterImage(AImg, AUrl: string);
 begin
   FFooterImage.FImgSource := AImg;
   FFooterImage.FTargetUrl := AUrl;
+
 end;
 
 procedure THtmlDocument.SetReference(const Value: string);
